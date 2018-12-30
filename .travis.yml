@@ -1,0 +1,8 @@
+language: node_js
+
+before_script:
+- cd feedback-frontend-app
+script:
+- npm run build
+- npm test
+
