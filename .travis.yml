@@ -2,6 +2,7 @@ language: node_js
 
 before_script:
 - cd feedback-frontend-app
+- npm install create-react-app
 script:
 - npm run build
 - npm test
