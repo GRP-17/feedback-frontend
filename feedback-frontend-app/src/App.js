@@ -1,7 +1,10 @@
 import React from 'react';
 import './App.css';
+
+// used to display the rating as stars
 import StarRatings from 'react-star-ratings';
 
+// used for the ajax requests
 const $ = require('jquery');
 
 class App extends React.Component {
@@ -13,17 +16,20 @@ class App extends React.Component {
         characters: ''
     };
 
+    //attaches the functions to this component so they can  access and update its state
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.changeRating = this.changeRating.bind(this);
   }
 
+  // gets called when the rating changes and updates the state of the react component - from the star-rating module
   changeRating(newRating, name) {
       this.setState({
           rating: newRating
       });
   }
 
+  // Handles any change to the textarea.... i.e. typing a new character - and updates the value stored in the react components state.
   handleChange(event) {
       var LocalCharacters = event.target.value.length;
       var LocalText = event.target.value
@@ -38,6 +44,7 @@ class App extends React.Component {
     });
   }
 
+  // gets called on hitting the submit button - validation and sends data to back-end
   handleSubmit(event) {
     event.preventDefault();
     //check rating
@@ -67,6 +74,7 @@ class App extends React.Component {
 
   }
 
+  // defines the html of the component
   render() {
     return (
       <form id='feedback-form' onSubmit={this.handleSubmit}>
