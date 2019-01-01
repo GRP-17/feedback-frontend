@@ -55,7 +55,7 @@ class App extends React.Component {
     $.ajax({
         url: 'https://feedback-analysis-grp-app.herokuapp.com/feedback',
         method: 'POST',
-        dataType: 'json',
+        contentType: 'application/json',
         data: JSON.stringify({
             rating: this.state.rating,
             text: this.state.text
