@@ -1,18 +1,5 @@
-#feedback-form {
-  margin-top: 80px;
+@import "~antd/dist/antd.css";
+
+* {
   text-align: center;
-}
-
-textarea {
-  border: 10px solid black;
-  resize: none;
-}
-
-p {
-  color: white;
-}
-
-#submit-btn {
-  width: 80px;
-  background-color: white;
 }
