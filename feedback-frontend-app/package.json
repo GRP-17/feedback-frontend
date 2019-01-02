@@ -2,6 +2,10 @@
   "name": "feedback-frontend-app",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "npm": "5.6.0",
+    "node": "8.11.1"
+  },
   "dependencies": {
     "jquery": "^3.3.1",
     "react": "^16.7.0",
@@ -10,10 +14,12 @@
     "react-star-ratings": "^2.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "dev": "react-scripts start",
+    "start": "serve -s build",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "heroku-postbuild": "npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"
