@@ -1,10 +1,16 @@
 language: node_js
 node_js:
-  - "8"
+- '8'
 before_script:
 - cd feedback-frontend-app
 - npm install
 script:
 - npm run build
 - npm test
-
+deploy:
+  provider: heroku
+  api_key:
+    secure: WQDbef08nUkyK3l9tC97KoVaDDD/ojWoDhK6XJX0PFrLlGfohUhdJTffyOptxnge3Qh+KGF+Xnr2t34+dE7BNwVeRuIJUThC+W0rzNZfzXwjv50eBjcKsDQu1QOsjuZjkWlsyjhgqC4JLlTu05S4pOvZ1SSAm3sWBmMsirQDdyOnqHhMfA07BWD64i4BuepO8zXqyUZrYRSoGhskcns0wKONARuuJ0lBOYh4HtyJ+1s28O83A00/gM2Jt1YgLxw162My4sER71G3YfJ5YnPhF3dtWKX1zkdqgbJrDAvsnHAe+6qIrARPLFXQgMaztQMvfiVFJiC34A4VhfU2QNqnF6wWwymcqRWNCKpc8M1mMlq8muWmsGnrsQD/l6fFDOHqAXzLimaUSyB0fSW9F/eog0lA9MxJ0v0H2nJXtlJqErNVo2rk1ZmFJqvrUzGSoCKz876ZhfA0KkBHVgy9FquPT5etYbw0DU1saDbA6GRSdjMnIFZ4Lw/32zH4eJqLW+6GQFnj6ExlbIaMQtlqgIHXfXL5qJtI6qhWMqlT8udcAwKAIJGiDV+Ltza7AVzGZEzTQmqNCWBr/D/MIXENTnU7EfVtxzTPYy4Xkf21JZm1jRUl8ZNOusewCwJP3v3wbNB1h7E44K/44vq+P1J76v/B0x17gQ+09NO7o8DeIvV3C34=
+app:
+  master: feedback-analysis
+  deploying-on-heroku: feedback-analysis
