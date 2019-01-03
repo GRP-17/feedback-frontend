@@ -1,21 +1,17 @@
 import React from "react";
-import TextField from "@material-ui/core/TextField";
-import { Rate, Spin, message } from "antd";
+import { Input, Rate, Spin, message, Button } from "antd";
 import api from "../../utils/Api";
-import Button from "@material-ui/core/Button";
 
 const Feedback = () => {
+  const TEXT_MAX_LENGTH = 5000;
   const initialFormValues = {
     rating: 5,
     text: ""
   };
   const [values, setValues] = React.useState(initialFormValues);
-
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const handleChange = name => event => {
-    const value = event.target ? event.target.value : event;
-
+  const handleChange = (name, value) => {
     setValues({ ...values, [name]: value });
   };
 
@@ -34,18 +30,25 @@ const Feedback = () => {
 
   return (
     <Spin tip="Loading..." spinning={isLoading} delay={500}>
-      <Rate value={values.rating} onChange={handleChange("rating")} />
-      <br />
-      <TextField
-        multiline
-        label="Text"
-        rowsMax="4"
-        value={values.text}
-        onChange={handleChange("text")}
-        margin="normal"
+      <Rate
+        value={values.rating}
+        onChange={v => {
+          handleChange("rating", v);
+        }}
       />
       <br />
-      <Button variant="contained" color="primary" onClick={handleSubmit}>
+      <Input.TextArea
+        rows={4}
+        placeholder="Details..."
+        value={values.text}
+        maxLength={TEXT_MAX_LENGTH}
+        onChange={e => {
+          handleChange("text", e.target.value);
+        }}
+      />
+      <br />
+      <div>{`${values.text.length}/${TEXT_MAX_LENGTH}`}</div>
+      <Button type="primary" onClick={handleSubmit}>
         Submit
       </Button>
     </Spin>
