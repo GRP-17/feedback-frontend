@@ -8,8 +8,9 @@ import { baseUrl } from "../config";
  */
 class Api {
   constructor(baseUrl) {
+    this.corsHelper = "https://cors-anywhere.herokuapp.com/";
     if (process.env.NODE_ENV !== "production") {
-      this.baseUrl = "https://cors-anywhere.herokuapp.com/" + baseUrl; // fall back to proxy
+      this.baseUrl = this.corsHelper + baseUrl; // fall back to proxy
     } else {
       this.baseUrl = baseUrl;
     }
@@ -23,7 +24,10 @@ class Api {
     // all options: https://github.com/axios/axios#request-config
     await this._checkResources();
     try {
-      configs.url = this.resources[resourceName];
+      configs.url =
+        process.env.NODE_ENV !== "production"
+          ? this.corsHelper + this.resources[resourceName]
+          : this.resources[resourceName];
       const { data } = await axios(configs);
       return data;
     } catch (e) {
