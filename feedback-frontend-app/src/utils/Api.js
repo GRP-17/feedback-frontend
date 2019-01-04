@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseUrl } from "../config";
+import { baseUrl, appUrl /*corsHelper*/ } from "../config";
 
 /**
  * Usage:
@@ -7,15 +7,16 @@ import { baseUrl } from "../config";
  * api.request('feedback', { method: "get", ... });
  */
 class Api {
-  constructor(baseUrl) {
-    this.corsHelper = "https://cors-anywhere.herokuapp.com/";
-    if (process.env.NODE_ENV !== "production") {
-      this.baseUrl = this.corsHelper + baseUrl; // fall back to proxy
-    } else {
-      this.baseUrl = baseUrl;
-    }
+  constructor() {
     this.resourceNames = ["feedback"];
     this.resources = {};
+    this.configs = {};
+    if (!this._isProduction()) {
+      this.configs.headers = {
+        "X-Requested-With": appUrl
+      };
+    }
+
     this._init();
   }
 
@@ -24,10 +25,9 @@ class Api {
     // all options: https://github.com/axios/axios#request-config
     await this._checkResources();
     try {
-      configs.url =
-        process.env.NODE_ENV !== "production"
-          ? this.corsHelper + this.resources[resourceName]
-          : this.resources[resourceName];
+      const url = this.resources[resourceName];
+      configs.url = this._parseUrl(url);
+      configs = { ...configs, ...this.configs };
       const { data } = await axios(configs);
       return data;
     } catch (e) {
@@ -38,7 +38,12 @@ class Api {
   /* Get all available resources. */
   async _init() {
     try {
-      const { data } = await axios.get(this.baseUrl);
+      const configs = {
+        url: this._parseUrl(baseUrl),
+        // url: corsHelper + "http://google.com/",
+        ...this.configs
+      };
+      const { data } = await axios(configs);
       const links = data._links;
       this._initResources(links);
       Promise.resolve();
@@ -59,6 +64,15 @@ class Api {
       await this._init();
     }
     Promise.resolve();
+  }
+
+  _isProduction() {
+    return process.env.NODE_ENV === "production";
+  }
+
+  _parseUrl(url) {
+    // return this._isProduction() ? url : corsHelper + url;
+    return url;
   }
 }
 
