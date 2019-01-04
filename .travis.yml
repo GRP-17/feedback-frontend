@@ -8,9 +8,9 @@ script:
 - npm run build
 - npm test
 deploy:
-    provider: heroku
-    api_key:
-      secure: Lw379nE7Lsxi25sljeUE4czNVeYj55QKE20ka5NDvME+Q27PLHh4rMWinBF6y3C+6dj6tLxC3GS6JBsHd+d/Po5fhnkn3uZfWIHhcv5QN1NrURq1GVlem2K0j+AslIxz7gRI/LhpoeYWwWmimu7WTX43ih+sOO82SjWpB1GufWDCssvBWtDl2JilxfpG5t91DjHZHcUdVVZ07QHyL2HSNMXazrV9GJit5tAtlqh3/SAzymO+pF/J8Mqk1QSIEt2Vo4o7CuoblxEG56m0DF7BNtS6FfaZzczkGU1qdF4oMUaIfOczuo+f2ur7AXIUz7/0v/DJKOKk/prAlFj8m1bER/pts584LSNiXN+lPlXAaFUpgFL8HouGS4hQZLZyjxbgUdLv7ncyQIs3MaT8H8SXgivL2T1NphaeV9FXg7xaIoxC8JnucTkZabqMDFbjbhg4HU4lMYFg91L6jA9/HpZ0IVTaGm9Bd9ZaZRQTHfgPLiYu+Bp9sDFdqocoHRBmh4X49ivara1qJgB62tIHm4UWBxvbO0BNGWyBP0/nbW/mcZw9jf+s1W4e9UNNfultSjJNV5/EIqJnraEuRL7jNhhsvLhHJal37ybMPodkegPoy36HJQZPOUMnCD/K+A/bFE7De5NNTQhQmB53dxrCU5dXmpDlTc3Cu7IVyvO++PF7+YI=
-    app:
-      master: feedback-analysis
-      deploying-on-heroku: feedback-analysis
+  provider: heroku
+  api_key:
+    secure: jMIi2EiXkax3dEdCB8mG/LzW3WUEpO7x+MG+c1rIKq6Vtt4VFWAnGi+rGhgaX0ZpRLu9PsWGH/ZJcJ8eriIKUuIxyTVMTN0fLj/4L4CvcNISihFBP/MaE8niyXbQl1VzTXD1ED69m0wMUZPr5YuquGiRSWQQwE+s8KU8TY2hXLoWfLWSpD+aQsu941ABcNqhGWSpAYmzFGDjbX1bEpqXP/nO8iUbmnyZGvv0hFAWHBK/lW1rhHK67JIZ7uY1/tOA1aWqLqHfcUK+6SW1nUP5RjXc7O3UCqZQVtTnQyLVzo6RWGA3mLjkufzpBNuLcwKVfs4HN3oYyI0+7aICvqazEm+Gqw0Sd0mKISp6hC5rfgYJYtIonEeSGGXxXL7kFr/jbIN7kA5/Z7Ka5mAx813ECtzz9yzrcYhdHQj+ALvvE99dk4Z8qe1DIadibl21+ynpIzRKzGlNsU2ho8w4iMOODGWuQ1+zsOF7oTRFuRCAHICO2zZUsyXybPJp2D9lGwlaDa4LC24vNDgNtCUA5JfN3S9M6r9vuCjXewmECnJIfKgSil/6vl7XCI6G0IZT3exVw35cHdgslt6IceOba6gMUK8MXe/dwaDoSW4nTS5ueBBVk2CUmn5EQ2x6C82ASI3aVudgFJNOUJdjE+Uf6Idl7AJ75isyYrtHJpFvkdAkFps=
+  app:
+    master: feedback-analysis
+    deploying-on-heroku: feedback-analysis
