@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseUrl, appUrl /*corsHelper*/ } from "../config";
+import { baseUrl, appUrl /* , corsHelper */ } from "../config";
 
 /**
  * Usage:
