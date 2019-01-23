@@ -1,58 +1,94 @@
-import React from "react";
+import React, { Component } from "react";
 import { Input, Rate, Spin, message, Button } from "antd";
 import api from "../../utils/Api";
 
-const Feedback = () => {
-  const TEXT_MAX_LENGTH = 5000;
-  const initialFormValues = {
+class Feedback extends Component {
+  TEXT_MAX_LENGTH = 5000;
+  initialFormValues = {
     rating: 5,
     text: ""
   };
-  const [values, setValues] = React.useState(initialFormValues);
-  const [isLoading, setIsLoading] = React.useState(false);
 
-  const handleChange = (name, value) => {
-    setValues({ ...values, [name]: value });
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      values: this.initialFormValues,
+      isLoading: false
+    };
+  }
 
-  const handleSubmit = async () => {
-    setIsLoading(true);
-    try {
-      await api.request("feedback", { method: "post", data: values });
-      message.success("Success");
-      setValues(initialFormValues);
-    } catch (e) {
-      message.error(e.toString());
-    } finally {
-      setIsLoading(false);
+  handleChange = (name, value) => {
+    if (
+      (name === "rating" && (value <= 5 && value >= 1)) ||
+      (name === "text" &&
+        typeof value === "string" &&
+        value.length <= this.TEXT_MAX_LENGTH)
+    ) {
+      this.setState({
+        ...this.state,
+        values: {
+          ...this.state.values,
+          [name]: value
+        }
+      });
+    } else {
+      throw new TypeError(
+        "name was of the wrong value or value had the wrong value or type"
+      );
     }
   };
 
-  return (
-    <Spin tip="Loading..." spinning={isLoading} delay={500}>
-      <Rate
-        value={values.rating}
-        onChange={v => {
-          handleChange("rating", v);
-        }}
-      />
-      <br />
-      <Input.TextArea
-        rows={4}
-        placeholder="Details..."
-        value={values.text}
-        maxLength={TEXT_MAX_LENGTH}
-        onChange={e => {
-          handleChange("text", e.target.value);
-        }}
-      />
-      <br />
-      <div>{`${values.text.length}/${TEXT_MAX_LENGTH}`}</div>
-      <Button type="primary" onClick={handleSubmit}>
-        Submit
-      </Button>
-    </Spin>
-  );
-};
+  handleSubmit = async () => {
+    this.setState({
+      ...this.state,
+      isLoading: true
+    });
+    try {
+      await api.request("feedback", {
+        method: "post",
+        data: this.state.values
+      });
+      message.success("Success");
+      this.setState({
+        ...this.state,
+        values: this.initialFormValues
+      });
+    } catch (e) {
+      message.error(e.toString());
+    } finally {
+      this.setState({
+        ...this.state,
+        isLoading: false
+      });
+    }
+  };
+  render() {
+    return (
+      <Spin tip="Loading..." spinning={this.state.isLoading} delay={500}>
+        <Rate
+          value={this.state.values.rating}
+          onChange={v => {
+            this.handleChange("rating", v);
+          }}
+        />
+        <br />
+        <Input.TextArea
+          rows={4}
+          placeholder="Details..."
+          value={this.state.values.text}
+          maxLength={this.TEXT_MAX_LENGTH}
+          onChange={e => {
+            this.handleChange("text", e.target.value);
+          }}
+        />
+        <br />
+        <div>{`${this.state.values.text.length}/${this.TEXT_MAX_LENGTH}`}</div>
+        <Button type="primary" onClick={this.handleSubmit}>
+          Submit
+        </Button>
+      </Spin>
+    );
+  }
+}
 
 export default Feedback;
