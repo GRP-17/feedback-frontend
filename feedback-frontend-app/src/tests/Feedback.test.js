@@ -2,16 +2,18 @@ import React from "react";
 import Feedback from "../routes/Feedback/Feedback";
 import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
+import Api from "../utils/Api.js";
 
 Enzyme.configure({ adapter: new Adapter() });
 
+jest.mock("../utils/Api.js");
+
 function setup() {
   const enzymeWrapper = shallow(<Feedback />);
-
   return enzymeWrapper;
 }
 
-let eWrap = setup();
+var eWrap = setup();
 
 describe("components", () => {
   describe("Feedback", () => {
@@ -22,6 +24,7 @@ describe("components", () => {
 
     beforeEach(() => {
       eWrap = setup();
+      jest.clearAllMocks();
     });
     it("should render self and subcomponents", () => {
       expect(eWrap.find("Spin"));
@@ -91,7 +94,7 @@ describe("components", () => {
       });
 
       describe("handleSubmit()", () => {
-        it("should set the isLoading in the state to true", () => {
+        it("should set the isLoading in the state to true", async () => {
           const inst = eWrap.instance();
 
           //call handleSubmit()
@@ -99,6 +102,15 @@ describe("components", () => {
 
           //check isLoading in the state
           expect(eWrap.state().isLoading).toBe(true);
+        });
+
+        it("should correctly call the Api request method", async () => {
+          const inst = eWrap.instance();
+
+          //call handleSubmit()
+          inst.handleSubmit();
+          //check the Api.response was called once
+          expect(Api.request.mock.calls.length).toBe(1);
         });
       });
     });
