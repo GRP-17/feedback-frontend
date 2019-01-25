@@ -8,7 +8,6 @@ import { baseUrl, appUrl /* , corsHelper */ } from "../config";
  */
 class Api {
   constructor() {
-    this.resourceNames = ["feedback"];
     this.resources = {};
     this.configs = {};
     if (!this._isProduction()) {
@@ -53,8 +52,8 @@ class Api {
   }
 
   _initResources(resourceLinks) {
-    this.resourceNames.forEach(name => {
-      this.resources[name] = resourceLinks[name].href;
+    Object.keys(resourceLinks).forEach(key => {
+      this.resources[key] = resourceLinks[key].href;
     });
   }
 
