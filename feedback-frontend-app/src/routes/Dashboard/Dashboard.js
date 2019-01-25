@@ -4,9 +4,9 @@ import FeedbackVolumn from "./components/FeedbackVolume/FeedbackVolume";
 import FeedbackList from "./components/FeedbackList/FeedbackList";
 import SentimentDistribution from "./components/SentimentDistribution/SentimentDistribution";
 import api from "../../utils/Api";
-rce;
+
 export default class Dashboard extends Component {
-  constructor() {
+  constructor(props) {
     super(props);
     this.state = {
       isLoading: false,
