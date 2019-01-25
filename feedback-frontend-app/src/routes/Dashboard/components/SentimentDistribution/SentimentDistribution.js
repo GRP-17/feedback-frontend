@@ -8,8 +8,15 @@ import {
   Cell,
   Tooltip
 } from "recharts";
+import PropTypes from "prop-types";
 
-export default props => {
+export default function SentimentDistribution(props) {
+  SentimentDistribution.propTypes = {
+    positive: PropTypes.number.isRequired,
+    negative: PropTypes.number.isRequired,
+    neutral: PropTypes.number.isRequired
+  };
+
   return (
     <BarChart
       width={300}
@@ -31,4 +38,4 @@ export default props => {
       </Bar>
     </BarChart>
   );
-};
+}
