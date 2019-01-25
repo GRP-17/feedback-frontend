@@ -1,49 +1,68 @@
-import React from "react";
+import React, { Component } from "react";
 import { Spin, message } from "antd";
 import FeedbackVolumn from "./components/FeedbackVolume/FeedbackVolume";
 import FeedbackList from "./components/FeedbackList/FeedbackList";
 import SentimentDistribution from "./components/SentimentDistribution/SentimentDistribution";
 import api from "../../utils/Api";
+rce;
+export default class Dashboard extends Component {
+  constructor() {
+    super(props);
+    this.state = {
+      isLoading: false,
+      feedbackList: [],
+      sentimentCount: {
+        NEGATIVE: 0,
+        POSITIVE: 0,
+        NETURAL: 0
+      }
+    };
+  }
 
-export default () => {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [feedbackList, setFeedbackList] = React.useState([]);
-  const [sentimentCount, setSentimentCount] = React.useState({
-    NEGATIVE: 0,
-    POSITIVE: 0,
-    NEUTRAL: 0
-  });
-
-  React.useEffect(async () => {
-    setIsLoading(true);
+  async getData() {
+    this.setState({
+      ...this.state,
+      isLoading: true
+    });
     try {
       const [feedbackData, sentimentCount] = await Promise.all([
         api.request("feedback"),
         api.request("feedback_sentiment_count")
       ]);
-      setFeedbackList(feedbackData._embedded.feedbackList);
-      setSentimentCount(sentimentCount);
+      this.setState({
+        ...this.state,
+        feedbackList: feedbackData,
+        sentimentCount: sentimentCount
+      });
     } catch (e) {
       message.error(e.toString());
     } finally {
-      setIsLoading(false);
+      this.setState({
+        ...this.state,
+        isLoading: false
+      });
     }
-  }, []);
+  }
 
-  return (
-    <div>
-      <h1>Dashboard</h1>
-      <Spin tip="Loading..." spinning={isLoading}>
-        <FeedbackVolumn volume={feedbackList.length} />
+  componentDidMount() {
+    this.getData();
+  }
+  render() {
+    return (
+      <div>
+        <h1>Dashboard</h1>
+        <Spin tip="Loading..." spinning={this.state.isLoading}>
+          <FeedbackVolumn volume={this.state.feedbackList.length} />
 
-        <SentimentDistribution
-          positive={sentimentCount.POSITIVE}
-          negative={sentimentCount.NEGATIVE}
-          neutral={sentimentCount.NEUTRAL}
-        />
+          <SentimentDistribution
+            positive={this.state.sentimentCount.POSITIVE}
+            negative={this.state.sentimentCount.NEGATIVE}
+            neutral={this.state.sentimentCount.NEUTRAL}
+          />
 
-        <FeedbackList dataSource={feedbackList} />
-      </Spin>
-    </div>
-  );
-};
+          <FeedbackList dataSource={this.state.feedbackList} />
+        </Spin>
+      </div>
+    );
+  }
+}
