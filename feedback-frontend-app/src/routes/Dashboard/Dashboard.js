@@ -1,5 +1,7 @@
 import React from "react";
-import { Card, Spin, Comment, List, message, Rate } from "antd";
+import { Spin, message } from "antd";
+import FeedbackVolumn from "./components/FeedbackVolume/FeedbackVolume";
+import FeedbackList from "./components/FeedbackList/FeedbackList";
 import api from "../../utils/Api";
 
 const Dashboard = () => {
@@ -22,26 +24,9 @@ const Dashboard = () => {
     <div>
       <h1>Dashboard</h1>
       <Spin tip="Loading..." spinning={isLoading} delay={500}>
-        <Card title="VOLUME" style={{ width: 300 }}>
-          <h2>{feedbackList.length}</h2>
-        </Card>
-        <List
-          className="comment-list"
-          header="Feedback"
-          itemLayout="horizontal"
-          dataSource={feedbackList}
-          renderItem={feedback => (
-            <Comment
-              content={feedback.text}
-              datetime={
-                <>
-                  {feedback.sentiment}
-                  <Rate disabled defaultValue={feedback.rating} />
-                </>
-              }
-            />
-          )}
-        />
+        <FeedbackVolumn volume={feedbackList.length} />
+
+        <FeedbackList dataSource={feedbackList} />
       </Spin>
     </div>
   );
