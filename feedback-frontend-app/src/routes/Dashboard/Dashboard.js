@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Spin, message } from "antd";
-import FeedbackVolumn from "./components/FeedbackVolume/FeedbackVolume";
+import FeedbackVolume from "./components/FeedbackVolume/FeedbackVolume";
 import FeedbackList from "./components/FeedbackList/FeedbackList";
 import SentimentDistribution from "./components/SentimentDistribution/SentimentDistribution";
 import api from "../../utils/Api";
@@ -14,14 +14,13 @@ export default class Dashboard extends Component {
       sentimentCount: {
         NEGATIVE: 0,
         POSITIVE: 0,
-        NETURAL: 0
+        NEUTRAL: 0
       }
     };
   }
 
   async getData() {
     this.setState({
-      ...this.state,
       isLoading: true
     });
     try {
@@ -30,15 +29,13 @@ export default class Dashboard extends Component {
         api.request("feedback_sentiment_count")
       ]);
       this.setState({
-        ...this.state,
-        feedbackList: feedbackData,
+        feedbackList: feedbackData._embedded.feedbackList,
         sentimentCount: sentimentCount
       });
     } catch (e) {
       message.error(e.toString());
     } finally {
       this.setState({
-        ...this.state,
         isLoading: false
       });
     }
@@ -47,12 +44,13 @@ export default class Dashboard extends Component {
   componentDidMount() {
     this.getData();
   }
+
   render() {
     return (
       <div>
         <h1>Dashboard</h1>
         <Spin tip="Loading..." spinning={this.state.isLoading}>
-          <FeedbackVolumn volume={this.state.feedbackList.length} />
+          <FeedbackVolume volume={this.state.feedbackList.length} />
 
           <SentimentDistribution
             positive={this.state.sentimentCount.POSITIVE}
