@@ -2,9 +2,16 @@ import Enzyme, { shallow } from "enzyme";
 import FeedbackList from "../routes/Dashboard/components/FeedbackList/FeedbackList";
 import React from "react";
 import Adapter from "enzyme-adapter-react-16";
-import { Comment, List, Rate } from "antd";
+import { List } from "antd";
 
 Enzyme.configure({ adapter: new Adapter() });
+
+function setup(dataSource) {
+  const enzymeWrapper = shallow(<FeedbackList dataSource={dataSource} />, {
+    disableLifecycleMethods: true
+  });
+  return enzymeWrapper;
+}
 
 const defaultDataSource = [
   {
@@ -24,13 +31,6 @@ const defaultDataSource = [
   }
 ];
 
-function setup(dataSource) {
-  const enzymeWrapper = shallow(<FeedbackList dataSource={dataSource} />, {
-    disableLifecycleMethods: true
-  });
-  return enzymeWrapper;
-}
-
 var eWrap = setup(defaultDataSource);
 
 describe("FeedbackList", () => {
@@ -47,12 +47,6 @@ describe("FeedbackList", () => {
     it("should pass correct props to the List", () => {
       //dataSource
       expect(eWrap.find(List).props().dataSource).toEqual(defaultDataSource);
-
-      //header
-      expect(eWrap.find(List).props().header).toEqual("Feedback");
-
-      //itemLayout
-      expect(eWrap.find(List).props().itemLayout).toEqual("horizontal");
     });
   });
 });
