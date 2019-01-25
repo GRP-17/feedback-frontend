@@ -94,7 +94,7 @@ describe("components", () => {
       });
 
       describe("handleSubmit()", () => {
-        it("should set the isLoading in the state to true", async () => {
+        it("should set the isLoading in at start and end", async () => {
           const inst = eWrap.instance();
 
           //call handleSubmit()
@@ -102,15 +102,58 @@ describe("components", () => {
 
           //check isLoading in the state
           expect(eWrap.state().isLoading).toBe(true);
+
+          //call handleSubmit() and wait
+          await inst.handleSubmit();
+
+          //check that isLoading is returned back to
+          //false after the function finishes
+          expect(eWrap.state().isLoading).toBe(false);
         });
 
         it("should correctly call the Api request method", async () => {
           const inst = eWrap.instance();
 
           //call handleSubmit()
-          inst.handleSubmit();
+          await inst.handleSubmit();
+
           //check the Api.response was called once
           expect(Api.request.mock.calls.length).toBe(1);
+
+          const body = {
+            method: "post",
+            data: eWrap.state().values
+          };
+
+          //check the arguments that it was called with
+          expect(Api.request.mock.calls[0][0]).toEqual("feedback");
+          expect(Api.request.mock.calls[0][1]).toEqual(body);
+        });
+
+        it("should reset the state values back to the initial ones", async () => {
+          const inst = eWrap.instance();
+
+          const values = {
+            rating: 2,
+            text: "Hello World"
+          };
+
+          //manually inject different values
+          eWrap.state().values = values;
+
+          //check the values where injected
+          expect(eWrap.state().values).toEqual(values);
+
+          //call handleSubmit()
+          await inst.handleSubmit();
+
+          const initalValues = {
+            rating: 5,
+            text: ""
+          };
+
+          //check if values where set back
+          expect(eWrap.state().values).toEqual(initalValues);
         });
       });
     });
