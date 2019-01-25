@@ -1,7 +1,12 @@
 import React from "react";
 import { Comment, List, Rate } from "antd";
+import PropTypes from "prop-types";
 
-export default props => {
+export default function FeedbackList(props) {
+  FeedbackList.propTypes = {
+    dataSource: PropTypes.array.isRequired
+  };
+
   return (
     <List
       header="Feedback"
@@ -20,4 +25,4 @@ export default props => {
       )}
     />
   );
-};
+}
