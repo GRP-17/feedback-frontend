@@ -4,6 +4,7 @@ import FeedbackVolume from "./components/FeedbackVolume/FeedbackVolume";
 import FeedbackList from "./components/FeedbackList/FeedbackList";
 import SentimentDistribution from "./components/SentimentDistribution/SentimentDistribution";
 import api from "../../utils/Api";
+import FeedbackAvgRating from "./components/FeedbackAvgRating/FeedbackAvgRating";
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -15,7 +16,8 @@ export default class Dashboard extends Component {
         NEGATIVE: 0,
         POSITIVE: 0,
         NEUTRAL: 0
-      }
+      },
+      feedbackAvgRating: 0
     };
   }
 
@@ -24,13 +26,15 @@ export default class Dashboard extends Component {
       isLoading: true
     });
     try {
-      const [feedbackData, sentimentCount] = await Promise.all([
+      const [feedbackData, feedbackAvgRating, sentimentCount] = await Promise.all([
         api.request("feedback"),
+        api.request("feedback_average_rating"),
         api.request("feedback_sentiment_count")
       ]);
       this.setState({
         feedbackList: feedbackData._embedded.feedbackList,
-        sentimentCount: sentimentCount
+        sentimentCount: sentimentCount,
+          feedbackAvgRating: feedbackAvgRating
       });
     } catch (e) {
       message.error(e.toString());
@@ -59,6 +63,7 @@ export default class Dashboard extends Component {
           />
 
           <FeedbackList dataSource={this.state.feedbackList} />
+          <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
         </Spin>
       </div>
     );
