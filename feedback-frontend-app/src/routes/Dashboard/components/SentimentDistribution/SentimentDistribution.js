@@ -26,7 +26,7 @@ export default function SentimentDistribution(props) {
         { sentiment: "Neutral", count: props.neutral },
         { sentiment: "Negative", count: props.negative }
       ]}
-    >
+    >}
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="sentiment" />
       <YAxis />
