@@ -28,6 +28,7 @@ describe("Dashboard", () => {
   });
   describe("Default", () => {
     const defaultState = {
+      feedbackAvgRating: 0,
       isLoading: false,
       feedbackList: [],
       sentimentCount: {
@@ -100,7 +101,7 @@ describe("Dashboard", () => {
         await eWrap.instance().getData();
 
         //check it was called twice
-        expect(Api.request.mock.calls.length).toEqual(2);
+        expect(Api.request.mock.calls.length).toEqual(3);
 
         //check the first call was to feedback
         expect(Api.request.mock.calls[0][0]).toEqual("feedback");
