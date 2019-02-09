@@ -26,10 +26,11 @@ export default class Dashboard extends Component {
       isLoading: true
     });
     try {
-      const [feedbackData, feedbackAvgRating, sentimentCount] = await Promise.all([
-        api.request("feedback"),
-        api.request("feedback_average_rating"),
-        api.request("feedback_sentiment_count")
+      const [feedbackData, sentimentCount, feedbackAvgRating] = await Promise.all([
+          api.request("feedback"),
+          api.request("feedback_sentiment_count"),
+          api.request("feedback_average_rating"),
+
       ]);
       this.setState({
         feedbackList: feedbackData._embedded.feedbackList,

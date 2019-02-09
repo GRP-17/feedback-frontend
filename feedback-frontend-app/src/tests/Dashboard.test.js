@@ -110,6 +110,8 @@ describe("Dashboard", () => {
         expect(Api.request.mock.calls[1][0]).toEqual(
           "feedback_sentiment_count"
         );
+
+        expect(Api.request.mock.calls[2][0]).toEqual("feedback_average_rating");
       });
 
       it("should pass the correct props when the state changes", () => {
