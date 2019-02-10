@@ -18,12 +18,11 @@ export default class Dashboard extends Component {
         NEUTRAL: 0
       },
       ratingCount: {
-        //TODO: change the defaults back to zeros
-        one: 200,
-        two: 50,
-        three: 200,
-        four: 300,
-        five: 400
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0
       }
     };
   }
@@ -33,15 +32,15 @@ export default class Dashboard extends Component {
       isLoading: true
     });
     try {
-      const [feedbackData, sentimentCount] = await Promise.all([
+      const [feedbackData, sentimentCount, ratingCount] = await Promise.all([
         api.request("feedback"),
-        api.request("feedback_sentiment_count")
-        //TODO: fetch rating counts
+        api.request("feedback_sentiment_count"),
+        api.request("feedback_rating_count")
       ]);
       this.setState({
         feedbackList: feedbackData._embedded.feedbackList,
-        sentimentCount: sentimentCount
-        //TODO: assign rating counts
+        sentimentCount: sentimentCount,
+        ratingCount: ratingCount
       });
     } catch (e) {
       message.error(e.toString());
