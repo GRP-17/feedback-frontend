@@ -29,6 +29,7 @@ describe("Dashboard", () => {
   });
   describe("Default", () => {
     const defaultState = {
+      feedbackAvgRating: 0,
       isLoading: false,
       feedbackList: [],
       sentimentCount: {
@@ -126,11 +127,13 @@ describe("Dashboard", () => {
         expect(Api.request.mock.calls[0][0]).toEqual("feedback");
 
         //check the second was to feedback_sentiment_count
-        expect(Api.request.mock.calls[1][0]).toEqual(
-          "feedback_sentiment_count"
-        );
-
+        expect(Api.request.mock.calls[1][0]).toEqual("feedback_sentiment_count");
+        
+        //rating/count should be third call
         expect(Api.request.mock.calls[2][0]).toEqual("feedback_rating_count");
+        
+        //rating/average should be fourth
+        expect(Api.request.mock.calls[3][0]).toEqual("feedback_average_rating");
       });
 
       it("should pass the correct props when the state changes", () => {

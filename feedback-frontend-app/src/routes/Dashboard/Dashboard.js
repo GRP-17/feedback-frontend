@@ -5,6 +5,7 @@ import FeedbackList from "./components/FeedbackList/FeedbackList";
 import SentimentDistribution from "./components/SentimentDistribution/SentimentDistribution";
 import RatingCountBreakdown from "./components/RatingCountBreakdown/RatingCountBreakdown";
 import api from "../../utils/Api";
+import FeedbackAvgRating from "./components/FeedbackAvgRating/FeedbackAvgRating";
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -23,7 +24,8 @@ export default class Dashboard extends Component {
         3: 0,
         4: 0,
         5: 0
-      }
+      },
+      feedbackAvgRating: 0
     };
   }
 
@@ -32,15 +34,17 @@ export default class Dashboard extends Component {
       isLoading: true
     });
     try {
-      const [feedbackData, sentimentCount, ratingCount] = await Promise.all([
+      const [feedbackData, sentimentCount, ratingCount, feedbackAvgRating] = await Promise.all([
         api.request("feedback"),
         api.request("feedback_sentiment_count"),
-        api.request("feedback_rating_count")
+        api.request("feedback_rating_count"),
+        api.request("feedback_average_rating"),
       ]);
       this.setState({
         feedbackList: feedbackData._embedded.feedbackList,
         sentimentCount: sentimentCount,
-        ratingCount: ratingCount
+        ratingCount: ratingCount,
+        feedbackAvgRating: feedbackAvgRating
       });
     } catch (e) {
       message.error(e.toString());
@@ -71,6 +75,7 @@ export default class Dashboard extends Component {
           <RatingCountBreakdown count={this.state.ratingCount} />
 
           <FeedbackList dataSource={this.state.feedbackList} />
+          <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
         </Spin>
       </div>
     );
