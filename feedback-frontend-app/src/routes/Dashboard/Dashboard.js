@@ -3,6 +3,7 @@ import { Spin, message } from "antd";
 import FeedbackVolume from "./components/FeedbackVolume/FeedbackVolume";
 import FeedbackList from "./components/FeedbackList/FeedbackList";
 import SentimentDistribution from "./components/SentimentDistribution/SentimentDistribution";
+import RatingCountBreakdown from "./components/RatingCountBreakdown/RatingCountBreakdown";
 import api from "../../utils/Api";
 import FeedbackAvgRating from "./components/FeedbackAvgRating/FeedbackAvgRating";
 
@@ -17,6 +18,13 @@ export default class Dashboard extends Component {
         POSITIVE: 0,
         NEUTRAL: 0
       },
+      ratingCount: {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0
+      },
       feedbackAvgRating: 0
     };
   }
@@ -26,16 +34,17 @@ export default class Dashboard extends Component {
       isLoading: true
     });
     try {
-      const [feedbackData, sentimentCount, feedbackAvgRating] = await Promise.all([
-          api.request("feedback"),
-          api.request("feedback_sentiment_count"),
-          api.request("feedback_average_rating"),
-
+      const [feedbackData, sentimentCount, ratingCount, feedbackAvgRating] = await Promise.all([
+        api.request("feedback"),
+        api.request("feedback_sentiment_count"),
+        api.request("feedback_rating_count"),
+        api.request("feedback_average_rating"),
       ]);
       this.setState({
         feedbackList: feedbackData._embedded.feedbackList,
         sentimentCount: sentimentCount,
-          feedbackAvgRating: feedbackAvgRating
+        ratingCount: ratingCount,
+        feedbackAvgRating: feedbackAvgRating
       });
     } catch (e) {
       message.error(e.toString());
@@ -62,6 +71,8 @@ export default class Dashboard extends Component {
             negative={this.state.sentimentCount.NEGATIVE}
             neutral={this.state.sentimentCount.NEUTRAL}
           />
+
+          <RatingCountBreakdown count={this.state.ratingCount} />
 
           <FeedbackList dataSource={this.state.feedbackList} />
           <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />

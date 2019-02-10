@@ -2,6 +2,7 @@ import Enzyme, { shallow } from "enzyme";
 import Dashboard from "../routes/Dashboard/Dashboard";
 import FeedbackVolume from "../routes/Dashboard/components/FeedbackVolume/FeedbackVolume";
 import SentimentDistribution from "../routes/Dashboard/components/SentimentDistribution/SentimentDistribution";
+import RatingCountBreakdown from "../routes/Dashboard/components/RatingCountBreakdown/RatingCountBreakdown";
 import FeedbackList from "../routes/Dashboard/components/FeedbackList/FeedbackList";
 import { Spin } from "antd";
 
@@ -35,6 +36,13 @@ describe("Dashboard", () => {
         NEGATIVE: 0,
         POSITIVE: 0,
         NEUTRAL: 0
+      },
+      ratingCount: {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0
       }
     };
 
@@ -49,6 +57,7 @@ describe("Dashboard", () => {
       expect(eWrap.find(Spin).length).toBe(1);
       expect(eWrap.find(FeedbackVolume).length).toBe(1);
       expect(eWrap.find(SentimentDistribution).length).toBe(1);
+      expect(eWrap.find(RatingCountBreakdown).length).toBe(1);
       expect(eWrap.find(FeedbackList).length).toBe(1);
 
       //check the props passed to the elements
@@ -71,6 +80,17 @@ describe("Dashboard", () => {
       expect(eWrap.find(SentimentDistribution).props().neutral).toEqual(
         defaultState.sentimentCount.NEUTRAL
       );
+
+      const counts = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0
+      };
+
+      //RatingCounts
+      expect(eWrap.find(RatingCountBreakdown).props().count).toEqual(counts);
 
       //FeedbackList
       expect(eWrap.find(FeedbackList).props().dataSource).toEqual(
@@ -101,7 +121,7 @@ describe("Dashboard", () => {
         await eWrap.instance().getData();
 
         //check it was called twice
-        expect(Api.request.mock.calls.length).toEqual(3);
+        expect(Api.request.mock.calls.length).toEqual(4);
 
         //check the first call was to feedback
         expect(Api.request.mock.calls[0][0]).toEqual("feedback");
@@ -111,7 +131,11 @@ describe("Dashboard", () => {
           "feedback_sentiment_count"
         );
 
-        expect(Api.request.mock.calls[2][0]).toEqual("feedback_average_rating");
+        //rating/count should be third call
+        expect(Api.request.mock.calls[2][0]).toEqual("feedback_rating_count");
+
+        //rating/average should be fourth
+        expect(Api.request.mock.calls[3][0]).toEqual("feedback_average_rating");
       });
 
       it("should pass the correct props when the state changes", () => {
@@ -125,7 +149,6 @@ describe("Dashboard", () => {
 
         //set the new state
         eWrap.setState({
-          isLoading: false,
           feedbackList: [1, 2, 3]
         });
 
@@ -134,8 +157,6 @@ describe("Dashboard", () => {
 
         //set the new state
         eWrap.setState({
-          isLoading: false,
-          feedbackList: [],
           sentimentCount: {
             POSITIVE: 1,
             NEGATIVE: 2,
@@ -150,7 +171,6 @@ describe("Dashboard", () => {
 
         //set the new state
         eWrap.setState({
-          isLoading: false,
           feedbackList: [1, 2, 3]
         });
 
