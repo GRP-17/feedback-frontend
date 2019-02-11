@@ -38,13 +38,13 @@ export default class Dashboard extends Component {
         api.request("feedback"),
         api.request("feedback_sentiment_count"),
         api.request("feedback_rating_count"),
-        api.request("feedback_average_rating"),
+        api.request("feedback_rating_average"),
       ]);
       this.setState({
         feedbackList: feedbackData._embedded.feedbackList,
         sentimentCount: sentimentCount,
         ratingCount: ratingCount,
-        feedbackAvgRating: feedbackAvgRating
+        feedbackAvgRating: feedbackAvgRating.average
       });
     } catch (e) {
       message.error(e.toString());
@@ -61,10 +61,12 @@ export default class Dashboard extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{ padding: 25 }}>
         <h1>Dashboard</h1>
         <Spin tip="Loading..." spinning={this.state.isLoading}>
           <FeedbackVolume volume={this.state.feedbackList.length} />
+
+          <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
 
           <SentimentDistribution
             positive={this.state.sentimentCount.POSITIVE}
@@ -75,7 +77,6 @@ export default class Dashboard extends Component {
           <RatingCountBreakdown count={this.state.ratingCount} />
 
           <FeedbackList dataSource={this.state.feedbackList} />
-          <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
         </Spin>
       </div>
     );
