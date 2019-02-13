@@ -1,6 +1,7 @@
 import React from "react";
 import { List, Rate } from "antd";
 import PropTypes from "prop-types";
+import moment from 'moment';
 
 export default function FeedbackList(props) {
   FeedbackList.propTypes = {
@@ -16,7 +17,7 @@ export default function FeedbackList(props) {
 
     return <List.Item>
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <span style={{
+        <div style={{
           backgroundColor: sentiment2color[feedback.sentiment],
           height: 10,
           width: 10,
@@ -24,11 +25,12 @@ export default function FeedbackList(props) {
           marginRight: 5,
         }} />
         <Rate disabled defaultValue={feedback.rating} />
+        <div>{moment(feedback.created).format('YYYY/MM/DD HH:mm')}</div>
       </div>
       <div style={{
-        height: 100,
+        height: 50,
         overflow: 'scroll',
-      }}>{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}{feedback.text}</div>
+      }}>{feedback.text}</div>
     </List.Item>
   }
 
