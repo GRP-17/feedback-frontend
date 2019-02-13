@@ -135,7 +135,7 @@ describe("Dashboard", () => {
         expect(Api.request.mock.calls[2][0]).toEqual("feedback_rating_count");
 
         //rating/average should be fourth
-        expect(Api.request.mock.calls[3][0]).toEqual("feedback_average_rating");
+        expect(Api.request.mock.calls[3][0]).toEqual("feedback_rating_average");
       });
 
       it("should pass the correct props when the state changes", () => {
