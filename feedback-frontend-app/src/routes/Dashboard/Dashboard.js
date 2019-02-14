@@ -47,7 +47,7 @@ export default class Dashboard extends Component {
         feedbackCount: feedback_count,
         sentimentCount: feedback_sentiment_count,
         ratingCount: feedback_rating_count,
-        feedbackAvgRating: feedback_rating_average
+        feedbackAvgRating: feedback_rating_average,
       });
     } catch (e) {
       message.error(e.toString());
@@ -66,7 +66,7 @@ export default class Dashboard extends Component {
     return (
       <div style={{ padding: 25 }}>
         <h1>Dashboard</h1>
-        <Spin tip="Loading..." spinning={this.state.feedbackCount}>
+        <Spin tip="Loading..." spinning={this.state.isLoading}>
           <FeedbackVolume volume={this.state.feedbackList.length} />
 
           <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
