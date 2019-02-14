@@ -13,6 +13,7 @@ export default class Dashboard extends Component {
     this.state = {
       isLoading: false,
       feedbackList: [],
+      feedbackCount: 0,
       sentimentCount: {
         NEGATIVE: 0,
         POSITIVE: 0,
@@ -34,17 +35,19 @@ export default class Dashboard extends Component {
       isLoading: true
     });
     try {
-      const [feedbackData, sentimentCount, ratingCount, feedbackAvgRating] = await Promise.all([
-        api.request("feedback"),
-        api.request("feedback_sentiment_count"),
-        api.request("feedback_rating_count"),
-        api.request("feedback_rating_average"),
-      ]);
+      const {
+        feedback,
+        feedback_rating_average,
+        feedback_rating_count,
+        feedback_sentiment_count,
+        feedback_count,
+      } = await api.request("dashboard")
       this.setState({
-        feedbackList: feedbackData._embedded.feedbackList,
-        sentimentCount: sentimentCount,
-        ratingCount: ratingCount,
-        feedbackAvgRating: feedbackAvgRating.average
+        feedbackList: feedback,
+        feedbackCount: feedback_count,
+        sentimentCount: feedback_sentiment_count,
+        ratingCount: feedback_rating_count,
+        feedbackAvgRating: feedback_rating_average,
       });
     } catch (e) {
       message.error(e.toString());
