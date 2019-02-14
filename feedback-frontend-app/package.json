@@ -24,8 +24,21 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
-    "heroku-postbuild": "npm run build"
+    "heroku-postbuild": "npm run build",
+    "lint": "node_modules/.bin/eslint --ext .js src",
+    "prettier": "./node_modules/.bin/prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+   "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
+     "prettier --single-quote --write",
+     "git add"
+   ]
+ },
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -37,6 +50,9 @@
   ],
   "devDependencies": {
     "enzyme": "^3.8.0",
-    "enzyme-adapter-react-16": "^1.8.0"
+    "enzyme-adapter-react-16": "^1.8.0",
+    "husky": "^1.3.1",
+    "lint-staged": "^8.1.4",
+    "prettier": "^1.16.4"
   }
 }

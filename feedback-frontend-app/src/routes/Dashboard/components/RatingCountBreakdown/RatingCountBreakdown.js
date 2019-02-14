@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import {
   BarChart,
   CartesianGrid,
@@ -6,9 +6,9 @@ import {
   YAxis,
   Bar,
   Cell,
-  Tooltip
-} from "recharts";
-import PropTypes from "prop-types";
+  Tooltip,
+} from 'recharts'
+import PropTypes from 'prop-types'
 
 export default function RatingCountBreakdown(props) {
   RatingCountBreakdown.propTypes = {
@@ -17,20 +17,20 @@ export default function RatingCountBreakdown(props) {
       2: PropTypes.number,
       3: PropTypes.number,
       4: PropTypes.number,
-      5: PropTypes.number
-    })
-  };
+      5: PropTypes.number,
+    }),
+  }
 
   return (
     <BarChart
       width={500}
       height={150}
       data={[
-        { rating: "Five", count: props.count[5] },
-        { rating: "Four", count: props.count[4] },
-        { rating: "Three", count: props.count[3] },
-        { rating: "Two", count: props.count[2] },
-        { rating: "One", count: props.count[1] }
+        { rating: 'Five', count: props.count[5] },
+        { rating: 'Four', count: props.count[4] },
+        { rating: 'Three', count: props.count[3] },
+        { rating: 'Two', count: props.count[2] },
+        { rating: 'One', count: props.count[1] },
       ]}
     >
       <CartesianGrid strokeDasharray="3 3" vertical={false} />
@@ -45,5 +45,5 @@ export default function RatingCountBreakdown(props) {
         <Cell fill="#e74858" />
       </Bar>
     </BarChart>
-  );
+  )
 }
