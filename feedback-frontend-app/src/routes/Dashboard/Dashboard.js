@@ -27,6 +27,7 @@ export default class Dashboard extends Component {
         5: 0,
       },
       feedbackAvgRating: 0,
+      negativePerDay: 0,
     }
   }
 
@@ -40,6 +41,7 @@ export default class Dashboard extends Component {
         feedback_rating_average,
         feedback_rating_count,
         feedback_sentiment_count,
+        feedback_rating_negative,
         feedback_count,
       } = await api.request('dashboard')
       this.setState({
@@ -48,7 +50,9 @@ export default class Dashboard extends Component {
         sentimentCount: feedback_sentiment_count,
         ratingCount: feedback_rating_count,
         feedbackAvgRating: feedback_rating_average,
+        negativePerDay: feedback_rating_negative,
       })
+      console.log(this.state.negativePerDay)
     } catch (e) {
       message.error(e.toString())
     } finally {
@@ -78,7 +82,6 @@ export default class Dashboard extends Component {
           />
 
           <RatingCountBreakdown count={this.state.ratingCount} />
-
           <FeedbackList dataSource={this.state.feedbackList} />
         </Spin>
       </div>
