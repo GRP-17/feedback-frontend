@@ -6,6 +6,7 @@ import SentimentDistribution from './components/SentimentDistribution/SentimentD
 import RatingCountBreakdown from './components/RatingCountBreakdown/RatingCountBreakdown'
 import api from '../../utils/Api'
 import FeedbackAvgRating from './components/FeedbackAvgRating/FeedbackAvgRating'
+import MostCommonPhrases from "./components/MostCommonPhrases/MostCommonPhrases";
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -27,6 +28,7 @@ export default class Dashboard extends Component {
         5: 0,
       },
       feedbackAvgRating: 0,
+      feedbackCommonPhrases: [],
     }
   }
 
@@ -41,6 +43,7 @@ export default class Dashboard extends Component {
         feedback_rating_count,
         feedback_sentiment_count,
         feedback_count,
+        feedback_common_phrases,
       } = await api.request('dashboard')
       this.setState({
         feedbackList: feedback,
@@ -48,6 +51,7 @@ export default class Dashboard extends Component {
         sentimentCount: feedback_sentiment_count,
         ratingCount: feedback_rating_count,
         feedbackAvgRating: feedback_rating_average,
+        feedbackCommonPhrases: feedback_common_phrases,
       })
     } catch (e) {
       message.error(e.toString())
@@ -80,6 +84,7 @@ export default class Dashboard extends Component {
           <RatingCountBreakdown count={this.state.ratingCount} />
 
           <FeedbackList dataSource={this.state.feedbackList} />
+          <MostCommonPhrases dataSource={this.state.feedbackCommonPhrases}/>
         </Spin>
       </div>
     )
