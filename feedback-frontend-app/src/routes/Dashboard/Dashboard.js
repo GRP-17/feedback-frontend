@@ -6,7 +6,7 @@ import SentimentDistribution from './components/SentimentDistribution/SentimentD
 import RatingCountBreakdown from './components/RatingCountBreakdown/RatingCountBreakdown'
 import api from '../../utils/Api'
 import FeedbackAvgRating from './components/FeedbackAvgRating/FeedbackAvgRating'
-import MostCommonPhrases from "./components/MostCommonPhrases/MostCommonPhrases";
+import MostCommonPhrases from './components/MostCommonPhrases/MostCommonPhrases'
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -28,7 +28,7 @@ export default class Dashboard extends Component {
         5: 0,
       },
       feedbackAvgRating: 0,
-      feedbackCommonPhrases: [],
+      feedbackCommonPhrases: 0,
     }
   }
 
@@ -53,6 +53,7 @@ export default class Dashboard extends Component {
         feedbackAvgRating: feedback_rating_average,
         feedbackCommonPhrases: feedback_common_phrases,
       })
+      console.log(this.state.feedbackCommonPhrases)
     } catch (e) {
       message.error(e.toString())
     } finally {
@@ -84,7 +85,7 @@ export default class Dashboard extends Component {
           <RatingCountBreakdown count={this.state.ratingCount} />
 
           <FeedbackList dataSource={this.state.feedbackList} />
-          <MostCommonPhrases dataSource={this.state.feedbackCommonPhrases}/>
+          <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
         </Spin>
       </div>
     )
