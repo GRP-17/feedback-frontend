@@ -53,7 +53,7 @@ export default class Dashboard extends Component {
         feedbackAvgRating: feedback_rating_average,
         feedbackCommonPhrases: feedback_common_phrases,
       })
-      console.log(this.state.feedbackCommonPhrases)
+      console.log(this.state.sentimentCount)
     } catch (e) {
       message.error(e.toString())
     } finally {

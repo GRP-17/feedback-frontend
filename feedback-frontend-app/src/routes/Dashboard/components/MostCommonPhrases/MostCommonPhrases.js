@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 export default function MostCommonPhrases(props) {
   MostCommonPhrases.propTypes = {
-    datamap: PropTypes.object.isRequired,
+    datamap: PropTypes.array.isRequired,
   }
 
   const columns = [
