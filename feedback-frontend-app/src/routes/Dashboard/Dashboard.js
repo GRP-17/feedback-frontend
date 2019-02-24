@@ -6,6 +6,7 @@ import SentimentDistribution from './components/SentimentDistribution/SentimentD
 import RatingCountBreakdown from './components/RatingCountBreakdown/RatingCountBreakdown'
 import api from '../../utils/Api'
 import FeedbackAvgRating from './components/FeedbackAvgRating/FeedbackAvgRating'
+import RatingPerDay from './components/RatingPerDay/RatingPerDay'
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -27,7 +28,7 @@ export default class Dashboard extends Component {
         5: 0,
       },
       feedbackAvgRating: 0,
-      negativePerDay: 0,
+      negativePerDay: [],
     }
   }
 
@@ -50,9 +51,8 @@ export default class Dashboard extends Component {
         sentimentCount: feedback_sentiment_count,
         ratingCount: feedback_rating_count,
         feedbackAvgRating: feedback_rating_average,
-        negativePerDay: feedback_rating_negative,
+        negativePerDay: feedback_rating_negative.result.reverse(),
       })
-      console.log(this.state.negativePerDay)
     } catch (e) {
       message.error(e.toString())
     } finally {
@@ -80,6 +80,8 @@ export default class Dashboard extends Component {
             negative={this.state.sentimentCount.NEGATIVE}
             neutral={this.state.sentimentCount.NEUTRAL}
           />
+
+          <RatingPerDay data={this.state.negativePerDay} />
 
           <RatingCountBreakdown count={this.state.ratingCount} />
           <FeedbackList dataSource={this.state.feedbackList} />

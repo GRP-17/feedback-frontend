@@ -1,22 +1,14 @@
 import React from 'react'
-import {
-  LineChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-  Line,
-  Cell,
-  Tooltip,
-} from 'recharts'
+import { LineChart, CartesianGrid, XAxis, YAxis, Line } from 'recharts'
 import PropTypes from 'prop-types'
 
 function RatingPerDay(props) {
   return (
-    <LineChart width={500} height={150} data={[props.data]}>
+    <LineChart width={500} height={150} data={props.data}>
       <CartesianGrid strokeDasharray="3 3" vertical={false} />
-      <XAxis dataKey="date" />
+      <XAxis dataKey="timestamp" />
       <YAxis />
-      <Line type="monotone" dataKey="negativeCount" />
+      <Line type="monotone" dataKey="negative_count" />
     </LineChart>
   )
 }
