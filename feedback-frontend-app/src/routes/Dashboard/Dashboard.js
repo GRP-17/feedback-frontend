@@ -28,7 +28,26 @@ export default class Dashboard extends Component {
         5: 0,
       },
       feedbackAvgRating: 0,
-      feedbackCommonPhrases: 0,
+      feedbackCommonPhrases: [
+        {
+          volume: 0,
+          phrase: '',
+          average_rating: 0,
+          sentiments: { positive: 0, negative: 0, neutral: 0 },
+        },
+        {
+          volume: 0,
+          phrase: '',
+          average_rating: 0,
+          sentiments: { positive: 0, negative: 0, neutral: 0 },
+        },
+        {
+          volume: 0,
+          phrase: '',
+          average_rating: 0,
+          sentiments: { positive: 0, negative: 0, neutral: 0 },
+        },
+      ],
     }
   }
 
@@ -51,9 +70,9 @@ export default class Dashboard extends Component {
         sentimentCount: feedback_sentiment_count,
         ratingCount: feedback_rating_count,
         feedbackAvgRating: feedback_rating_average,
-        feedbackCommonPhrases: feedback_common_phrases,
+        feedbackCommonPhrases: feedback_common_phrases.result,
       })
-      console.log(this.state.sentimentCount)
+      console.log(this.state.feedbackCommonPhrases)
     } catch (e) {
       message.error(e.toString())
     } finally {
