@@ -51,6 +51,9 @@ export default function FeedbackList(props) {
         emptyText: <div style={{ fontStyle: 'italic' }}>No feedback</div>,
       }}
       renderItem={feedback => renderItem(feedback)}
+      pagination={{
+        pageSize: 10,
+      }}
     />
   )
 }
