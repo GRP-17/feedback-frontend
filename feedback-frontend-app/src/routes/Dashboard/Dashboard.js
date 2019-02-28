@@ -29,18 +29,16 @@ export default class Dashboard extends Component {
       },
       feedbackAvgRating: 0,
       feedbackCommonPhrases: [
-        {
-          volume: 0,
-          phrase: '',
-        },
-        {
-          volume: 0,
-          phrase: '',
-        },
-        {
-          volume: 0,
-          phrase: '',
-        },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
       ],
     }
   }
