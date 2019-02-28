@@ -32,20 +32,14 @@ export default class Dashboard extends Component {
         {
           volume: 0,
           phrase: '',
-          average_rating: 0,
-          sentiments: { positive: 0, negative: 0, neutral: 0 },
         },
         {
           volume: 0,
           phrase: '',
-          average_rating: 0,
-          sentiments: { positive: 0, negative: 0, neutral: 0 },
         },
         {
           volume: 0,
           phrase: '',
-          average_rating: 0,
-          sentiments: { positive: 0, negative: 0, neutral: 0 },
         },
       ],
     }
