@@ -46,6 +46,7 @@ export default class Dashboard extends Component {
         feedback_sentiment_count,
         feedback_rating_negative,
         feedback_count,
+        feedback_common_phrases,
       } = await api.request('dashboard')
       this.setState({
         feedbackList: feedback,
@@ -87,7 +88,10 @@ export default class Dashboard extends Component {
           <RatingPerDay data={this.state.negativePerDay} />
 
           <RatingCountBreakdown count={this.state.ratingCount} />
+
           <FeedbackList dataSource={this.state.feedbackList} />
+
+          <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
         </Spin>
       </div>
     )
