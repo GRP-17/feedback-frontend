@@ -7,6 +7,7 @@ import RatingCountBreakdown from './components/RatingCountBreakdown/RatingCountB
 import api from '../../utils/Api'
 import FeedbackAvgRating from './components/FeedbackAvgRating/FeedbackAvgRating'
 import MostCommonPhrases from './components/MostCommonPhrases/MostCommonPhrases'
+import RatingPerDay from './components/RatingPerDay/RatingPerDay'
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -29,6 +30,7 @@ export default class Dashboard extends Component {
       },
       feedbackAvgRating: 0,
       feedbackCommonPhrases: [],
+      negativePerDay: [],
     }
   }
 
@@ -42,6 +44,7 @@ export default class Dashboard extends Component {
         feedback_rating_average,
         feedback_rating_count,
         feedback_sentiment_count,
+        feedback_rating_negative,
         feedback_count,
         feedback_common_phrases,
       } = await api.request('dashboard')
@@ -52,6 +55,7 @@ export default class Dashboard extends Component {
         ratingCount: feedback_rating_count,
         feedbackAvgRating: feedback_rating_average,
         feedbackCommonPhrases: feedback_common_phrases.result,
+        negativePerDay: feedback_rating_negative.result.reverse(),
       })
       console.log(this.state.feedbackCommonPhrases)
     } catch (e) {
@@ -82,8 +86,9 @@ export default class Dashboard extends Component {
             neutral={this.state.sentimentCount.NEUTRAL}
           />
 
-          <RatingCountBreakdown count={this.state.ratingCount} />
+          <RatingPerDay data={this.state.negativePerDay} />
 
+          <RatingCountBreakdown count={this.state.ratingCount} />
           <FeedbackList dataSource={this.state.feedbackList} />
           <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
         </Spin>

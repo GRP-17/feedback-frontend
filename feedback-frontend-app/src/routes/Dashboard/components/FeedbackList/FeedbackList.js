@@ -36,7 +36,9 @@ export default function FeedbackList(props) {
             overflow: 'scroll',
           }}
         >
-          {feedback.text}
+          {feedback.text || (
+            <span style={{ fontStyle: 'italic' }}>(No text)</span>
+          )}
         </div>
       </List.Item>
     )

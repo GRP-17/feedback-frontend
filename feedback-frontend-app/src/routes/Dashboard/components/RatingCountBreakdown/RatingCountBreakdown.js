@@ -11,16 +11,6 @@ import {
 import PropTypes from 'prop-types'
 
 export default function RatingCountBreakdown(props) {
-  RatingCountBreakdown.propTypes = {
-    count: PropTypes.shape({
-      1: PropTypes.number,
-      2: PropTypes.number,
-      3: PropTypes.number,
-      4: PropTypes.number,
-      5: PropTypes.number,
-    }),
-  }
-
   return (
     <BarChart
       width={500}
@@ -46,4 +36,14 @@ export default function RatingCountBreakdown(props) {
       </Bar>
     </BarChart>
   )
+}
+
+RatingCountBreakdown.propTypes = {
+  count: PropTypes.shape({
+    1: PropTypes.number,
+    2: PropTypes.number,
+    3: PropTypes.number,
+    4: PropTypes.number,
+    5: PropTypes.number,
+  }),
 }
