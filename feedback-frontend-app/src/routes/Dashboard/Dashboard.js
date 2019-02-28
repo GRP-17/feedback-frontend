@@ -6,6 +6,7 @@ import SentimentDistribution from './components/SentimentDistribution/SentimentD
 import RatingCountBreakdown from './components/RatingCountBreakdown/RatingCountBreakdown'
 import api from '../../utils/Api'
 import FeedbackAvgRating from './components/FeedbackAvgRating/FeedbackAvgRating'
+import MostCommonPhrases from './components/MostCommonPhrases/MostCommonPhrases'
 import RatingPerDay from './components/RatingPerDay/RatingPerDay'
 
 export default class Dashboard extends Component {
@@ -28,6 +29,7 @@ export default class Dashboard extends Component {
         5: 0,
       },
       feedbackAvgRating: 0,
+      feedbackCommonPhrases: [],
       negativePerDay: [],
     }
   }
@@ -51,6 +53,7 @@ export default class Dashboard extends Component {
         sentimentCount: feedback_sentiment_count,
         ratingCount: feedback_rating_count,
         feedbackAvgRating: feedback_rating_average,
+        feedbackCommonPhrases: feedback_common_phrases.result,
         negativePerDay: feedback_rating_negative.result.reverse(),
       })
     } catch (e) {
