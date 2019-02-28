@@ -7,6 +7,7 @@ import RatingCountBreakdown from './components/RatingCountBreakdown/RatingCountB
 import api from '../../utils/Api'
 import FeedbackAvgRating from './components/FeedbackAvgRating/FeedbackAvgRating'
 import RatingPerDay from './components/RatingPerDay/RatingPerDay'
+import MostCommonPhrases from './components/MostCommonPhrases/MostCommonPhrases'
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -29,6 +30,18 @@ export default class Dashboard extends Component {
       },
       feedbackAvgRating: 0,
       negativePerDay: [],
+      feedbackCommonPhrases: [
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+        { volume: 0, phrase: '' },
+      ],
     }
   }
 
@@ -44,6 +57,7 @@ export default class Dashboard extends Component {
         feedback_sentiment_count,
         feedback_rating_negative,
         feedback_count,
+        feedback_common_phrases,
       } = await api.request('dashboard')
       this.setState({
         feedbackList: feedback,
@@ -51,8 +65,12 @@ export default class Dashboard extends Component {
         sentimentCount: feedback_sentiment_count,
         ratingCount: feedback_rating_count,
         feedbackAvgRating: feedback_rating_average,
+
         negativePerDay: feedback_rating_negative.result.reverse(),
+
+        feedbackCommonPhrases: feedback_common_phrases.result,
       })
+      console.log(this.state.feedbackCommonPhrases)
     } catch (e) {
       message.error(e.toString())
     } finally {
@@ -85,6 +103,7 @@ export default class Dashboard extends Component {
 
           <RatingCountBreakdown count={this.state.ratingCount} />
           <FeedbackList dataSource={this.state.feedbackList} />
+          <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
         </Spin>
       </div>
     )
