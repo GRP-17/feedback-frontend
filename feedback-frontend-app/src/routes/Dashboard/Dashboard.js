@@ -55,7 +55,7 @@ export default class Dashboard extends Component {
         ratingCount: feedback_rating_count,
         feedbackAvgRating: feedback_rating_average,
         feedbackCommonPhrases: feedback_common_phrases.result,
-        negativePerDay: feedback_rating_negative.result.reverse(),
+        negativePerDay: feedback_rating_negative.result,
       })
     } catch (e) {
       message.error(e.toString())
