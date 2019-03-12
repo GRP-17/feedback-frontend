@@ -8,8 +8,8 @@ export default function FeedbackAvgRating(props) {
   }
 
   return (
-    <Card title="Average Rating" style={{ width: 300 }}>
-      <h2>{props.avgrating}</h2>
+    <Card size="small" title="AvgRating" style={{ width: 100, height: 100 }}>
+      <h4>{props.avgrating}</h4>
     </Card>
   )
 }

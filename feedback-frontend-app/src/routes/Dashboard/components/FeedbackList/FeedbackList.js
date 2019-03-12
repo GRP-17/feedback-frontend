@@ -46,6 +46,7 @@ export default function FeedbackList(props) {
 
   return (
     <List
+      style={{ width: 500 }}
       header="Feedback"
       itemLayout="vertical"
       dataSource={props.dataSource}
@@ -54,7 +55,7 @@ export default function FeedbackList(props) {
       }}
       renderItem={feedback => renderItem(feedback)}
       pagination={{
-        pageSize: 10,
+        pageSize: 20,
       }}
     />
   )

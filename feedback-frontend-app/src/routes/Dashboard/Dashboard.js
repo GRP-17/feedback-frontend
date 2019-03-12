@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Spin, message } from 'antd'
+import { Spin, message, Row, Col, Menu } from 'antd'
 import FeedbackVolume from './components/FeedbackVolume/FeedbackVolume'
 import FeedbackList from './components/FeedbackList/FeedbackList'
 import SentimentDistribution from './components/SentimentDistribution/SentimentDistribution'
@@ -72,26 +72,46 @@ export default class Dashboard extends Component {
 
   render() {
     return (
-      <div style={{ padding: 25 }}>
-        <h1>Dashboard</h1>
+      <div style={{ padding: 25, background: 'white' }}>
+        <div style={{ padding: 15, background: 'dimgrey' }}>
+          <h1>Dashboard</h1>
+        </div>
+        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
+          <Menu.Item key="1">App Health</Menu.Item>
+          <Menu.Item key="2">insights</Menu.Item>
+          <Menu.Item key="3">Topics</Menu.Item>
+        </Menu>
         <Spin tip="Loading..." spinning={this.state.isLoading}>
-          <FeedbackVolume volume={this.state.feedbackList.length} />
-
-          <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
-
-          <SentimentDistribution
-            positive={this.state.sentimentCount.POSITIVE}
-            negative={this.state.sentimentCount.NEGATIVE}
-            neutral={this.state.sentimentCount.NEUTRAL}
-          />
-
-          <RatingPerDay data={this.state.negativePerDay} />
-
-          <RatingCountBreakdown count={this.state.ratingCount} />
-
-          <FeedbackList dataSource={this.state.feedbackList} />
-
-          <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
+          <Row>
+            <Col span="2">
+              <FeedbackVolume volume={this.state.feedbackList.length} />
+            </Col>
+            <Col span="8">
+              <RatingPerDay data={this.state.negativePerDay} />
+            </Col>
+            <Col span="2">
+              <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
+            </Col>
+            <Col span="4">
+              {' '}
+              <SentimentDistribution
+                positive={this.state.sentimentCount.POSITIVE}
+                negative={this.state.sentimentCount.NEGATIVE}
+                neutral={this.state.sentimentCount.NEUTRAL}
+              />
+            </Col>
+            <Col span="8">
+              <RatingCountBreakdown count={this.state.ratingCount} />
+            </Col>
+          </Row>
+          <Row>
+            <Col span="12">
+              <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
+            </Col>
+            <Col span="12">
+              <FeedbackList dataSource={this.state.feedbackList} />
+            </Col>
+          </Row>
         </Spin>
       </div>
     )

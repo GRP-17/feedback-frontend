@@ -8,8 +8,8 @@ export default function FeedbackVolume(props) {
   }
 
   return (
-    <Card title="VOLUME" style={{ width: 300 }}>
-      <h2>{props.volume}</h2>
+    <Card size="small" title="VOLUME" style={{ width: 100, height: 100 }}>
+      <h4>{props.volume}</h4>
     </Card>
   )
 }

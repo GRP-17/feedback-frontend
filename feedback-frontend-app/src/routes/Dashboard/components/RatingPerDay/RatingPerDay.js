@@ -10,7 +10,7 @@ function RatingPerDay(props) {
   }))
 
   return (
-    <LineChart width={500} height={150} data={data}>
+    <LineChart width={400} height={100} data={data}>
       <CartesianGrid strokeDasharray="3 3" vertical={false} />
       <XAxis dataKey="date" />
       <YAxis />
