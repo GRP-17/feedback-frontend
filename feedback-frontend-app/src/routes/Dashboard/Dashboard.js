@@ -73,27 +73,31 @@ export default class Dashboard extends Component {
   render() {
     return (
       <div style={{ padding: 25, background: 'white' }}>
-        <div style={{ padding: 15, background: 'dimgrey' }}>
+        <div style={{ padding: 15 }}>
           <h1>Dashboard</h1>
         </div>
-        <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
+        <Menu
+          theme="light"
+          mode="horizontal"
+          defaultSelectedKeys={['2']}
+          style={{ background: '#efeded' }}
+        >
           <Menu.Item key="1">App Health</Menu.Item>
           <Menu.Item key="2">insights</Menu.Item>
           <Menu.Item key="3">Topics</Menu.Item>
         </Menu>
         <Spin tip="Loading..." spinning={this.state.isLoading}>
-          <Row>
-            <Col span="2">
+          <Row style={{ padding: 30 }}>
+            <Col span="1">
               <FeedbackVolume volume={this.state.feedbackList.length} />
             </Col>
-            <Col span="8">
+            <Col span="9">
               <RatingPerDay data={this.state.negativePerDay} />
             </Col>
-            <Col span="2">
+            <Col span="1">
               <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
             </Col>
-            <Col span="4">
-              {' '}
+            <Col span="5">
               <SentimentDistribution
                 positive={this.state.sentimentCount.POSITIVE}
                 negative={this.state.sentimentCount.NEGATIVE}
@@ -105,10 +109,10 @@ export default class Dashboard extends Component {
             </Col>
           </Row>
           <Row>
-            <Col span="12">
+            <Col span="6">
               <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
             </Col>
-            <Col span="12">
+            <Col span="18">
               <FeedbackList dataSource={this.state.feedbackList} />
             </Col>
           </Row>

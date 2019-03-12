@@ -46,7 +46,8 @@ export default function FeedbackList(props) {
 
   return (
     <List
-      style={{ width: 500 }}
+      grid={{ gutter: 10, column: 2 }}
+      style={{ width: 900 }}
       header="Feedback"
       itemLayout="vertical"
       dataSource={props.dataSource}
