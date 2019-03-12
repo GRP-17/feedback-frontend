@@ -29,7 +29,7 @@ export default function MostCommonPhrases(props) {
       className="most common phrases"
       columns={columns}
       dataSource={data}
-      scroll={{ x: 280, y: 200 }}
+      scroll={{ x: 200, y: 200 }}
     />
   )
 }
