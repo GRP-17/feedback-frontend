@@ -6,8 +6,8 @@ export default function MostCommonPhrases(props) {
   MostCommonPhrases.propTypes = {
     datamap: PropTypes.arrayOf(
       PropTypes.shape({
-        phrase: PropTypes.string,
-        volume: PropTypes.number,
+        term: PropTypes.string,
+        frequency: PropTypes.number,
       })
     ),
   }
@@ -18,9 +18,9 @@ export default function MostCommonPhrases(props) {
   ]
 
   const data = props.datamap.map(el => ({
-    key: el.phrase,
-    volume: el.volume,
-    phrase: el.phrase,
+    key: el.term,
+    volume: el.frequency,
+    phrase: el.term,
   }))
 
   return (
@@ -30,6 +30,7 @@ export default function MostCommonPhrases(props) {
       columns={columns}
       dataSource={data}
       scroll={{ x: 200, y: 200 }}
+      rowKey="term"
     />
   )
 }
