@@ -6,8 +6,8 @@ export default function MostCommonPhrases(props) {
   MostCommonPhrases.propTypes = {
     datamap: PropTypes.arrayOf(
       PropTypes.shape({
-        volume: PropTypes.number,
         phrase: PropTypes.string,
+        volume: PropTypes.number,
       })
     ),
   }

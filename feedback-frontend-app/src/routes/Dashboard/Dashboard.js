@@ -59,6 +59,7 @@ export default class Dashboard extends Component {
         feedbackCommonPhrases: feedback_common_phrases.result,
         negativePerDay: feedback_rating_negative.result,
       })
+      //console.log(feedback_common_phrases);
     } catch (e) {
       message.error(e.toString())
     } finally {
@@ -82,22 +83,22 @@ export default class Dashboard extends Component {
           <div>
             <Row style={{ padding: '20px 0' }}>
               <div>
-                <Col span="2">
+                <Col span={2}>
                   <FeedbackVolume volume={this.state.feedbackList.length} />
                 </Col>
               </div>
               <div>
-                <Col span="8">
+                <Col span={8}>
                   <RatingPerDay data={this.state.negativePerDay} />
                 </Col>
               </div>
               <div>
-                <Col span="2">
+                <Col span={2}>
                   <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
                 </Col>
               </div>
               <div>
-                <Col span="5">
+                <Col span={5}>
                   <SentimentDistribution
                     positive={this.state.sentimentCount.POSITIVE}
                     negative={this.state.sentimentCount.NEGATIVE}
@@ -106,7 +107,7 @@ export default class Dashboard extends Component {
                 </Col>
               </div>
               <div>
-                <Col span="7" style={{ padding: '0 15px' }}>
+                <Col span={7} style={{ padding: '0 15px' }}>
                   <RatingCountBreakdown count={this.state.ratingCount} />
                 </Col>
               </div>
@@ -122,10 +123,10 @@ export default class Dashboard extends Component {
           </div>
           <div>
             <Row>
-              <Col span="6">
+              <Col span={6}>
                 <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
               </Col>
-              <Col span="18">
+              <Col span={18}>
                 <FeedbackList dataSource={this.state.feedbackList} />
               </Col>
             </Row>
