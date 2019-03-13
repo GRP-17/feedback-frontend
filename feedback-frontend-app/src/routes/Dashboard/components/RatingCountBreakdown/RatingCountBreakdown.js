@@ -13,7 +13,7 @@ import PropTypes from 'prop-types'
 export default function RatingCountBreakdown(props) {
   return (
     <BarChart
-      width={400}
+      width={350}
       height={150}
       data={[
         { rating: 'Five', count: props.count[5] },

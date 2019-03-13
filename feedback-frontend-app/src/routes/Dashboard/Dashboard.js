@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Spin, message, Row, Col, Menu, Input } from 'antd'
+import { Spin, message, Row, Col, Input } from 'antd'
 import FeedbackVolume from './components/FeedbackVolume/FeedbackVolume'
 import FeedbackList from './components/FeedbackList/FeedbackList'
 import SentimentDistribution from './components/SentimentDistribution/SentimentDistribution'
@@ -78,19 +78,6 @@ export default class Dashboard extends Component {
         <div>
           <h1>Dashboard</h1>
         </div>
-        <div>
-          <Menu
-            theme="light"
-            mode="horizontal"
-            defaultSelectedKeys={['2']}
-            style={{ background: '#efeded' }}
-          >
-            <Menu.Item key="1">App Health</Menu.Item>
-            <Menu.Item key="2">insights</Menu.Item>
-            <Menu.Item key="3">Topics</Menu.Item>
-          </Menu>
-        </div>
-
         <Spin tip="Loading..." spinning={this.state.isLoading}>
           <div>
             <Row style={{ padding: '20px 0' }}>
@@ -110,7 +97,7 @@ export default class Dashboard extends Component {
                 </Col>
               </div>
               <div>
-                <Col span="4">
+                <Col span="5">
                   <SentimentDistribution
                     positive={this.state.sentimentCount.POSITIVE}
                     negative={this.state.sentimentCount.NEGATIVE}
@@ -119,7 +106,7 @@ export default class Dashboard extends Component {
                 </Col>
               </div>
               <div>
-                <Col span="8" style={{ padding: '0 15px' }}>
+                <Col span="7" style={{ padding: '0 15px' }}>
                   <RatingCountBreakdown count={this.state.ratingCount} />
                 </Col>
               </div>

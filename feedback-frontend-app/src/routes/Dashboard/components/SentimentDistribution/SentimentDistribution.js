@@ -19,7 +19,7 @@ export default function SentimentDistribution(props) {
 
   return (
     <BarChart
-      width={250}
+      width={280}
       height={150}
       data={[
         { sentiment: 'Positive', count: props.positive },
