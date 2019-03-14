@@ -1,6 +1,8 @@
 import React from 'react'
-import { Card } from 'antd'
+import { Card, Typography } from 'antd'
 import PropTypes from 'prop-types'
+
+const { Title } = Typography
 
 export default function FeedbackVolume(props) {
   FeedbackVolume.propTypes = {
@@ -8,8 +10,8 @@ export default function FeedbackVolume(props) {
   }
 
   return (
-    <Card title="VOLUME" style={{ width: 300 }}>
-      <h2>{props.volume}</h2>
+    <Card size="small" title="VOLUME">
+      <Title level={4}>{props.volume}</Title>
     </Card>
   )
 }

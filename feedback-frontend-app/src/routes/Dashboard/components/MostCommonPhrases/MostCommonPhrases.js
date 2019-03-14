@@ -6,8 +6,8 @@ export default function MostCommonPhrases(props) {
   MostCommonPhrases.propTypes = {
     datamap: PropTypes.arrayOf(
       PropTypes.shape({
-        volume: PropTypes.number,
-        phrase: PropTypes.string,
+        term: PropTypes.string,
+        frequency: PropTypes.number,
       })
     ),
   }
@@ -18,16 +18,18 @@ export default function MostCommonPhrases(props) {
   ]
 
   const data = props.datamap.map(el => ({
-    key: el.phrase,
-    volume: el.volume,
-    phrase: el.phrase,
+    key: el.term,
+    volume: el.frequency,
+    phrase: el.term,
   }))
 
   return (
     <Table
-      className="most common phrases"
+      size="small"
       columns={columns}
       dataSource={data}
+      rowKey="phrase"
+      pagination={false}
     />
   )
 }

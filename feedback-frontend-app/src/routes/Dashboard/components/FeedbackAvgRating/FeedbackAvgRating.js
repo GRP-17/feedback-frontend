@@ -1,6 +1,8 @@
 import React from 'react'
-import { Card } from 'antd'
+import { Card, Typography } from 'antd'
 import PropTypes from 'prop-types'
+
+const { Title } = Typography
 
 export default function FeedbackAvgRating(props) {
   FeedbackAvgRating.propTypes = {
@@ -8,8 +10,8 @@ export default function FeedbackAvgRating(props) {
   }
 
   return (
-    <Card title="Average Rating" style={{ width: 300 }}>
-      <h2>{props.avgrating}</h2>
+    <Card size="small" title="AVG RATING">
+      <Title level={4}>{props.avgrating}</Title>
     </Card>
   )
 }
