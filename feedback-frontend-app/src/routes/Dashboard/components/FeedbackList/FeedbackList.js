@@ -1,14 +1,17 @@
-import React from 'react'
-import { List, Rate, Typography, Row, Card } from 'antd'
+import React, { useState } from 'react'
+import { List, Rate, Typography, Row, Card, Modal } from 'antd'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 
-const { Text } = Typography
+const { Paragraph, Text } = Typography
 
 export default function FeedbackList(props) {
   FeedbackList.propTypes = {
     dataSource: PropTypes.array.isRequired,
   }
+
+  const [currentFeedback, setCurrentFeedback] = useState({})
+  const [isShowModal, setIsShowModal] = useState(false)
 
   const renderItem = feedback => {
     const sentiment2color = {
@@ -17,11 +20,18 @@ export default function FeedbackList(props) {
       NEGATIVE: '#e44a5b',
     }
 
+    const openModal = () => {
+      setCurrentFeedback(feedback)
+      setIsShowModal(true)
+    }
+
     return (
       <List.Item>
         <Card
           type="inner"
           size="small"
+          hoverable
+          onClick={openModal}
           title={
             <Row type="flex" align="middle">
               <div
@@ -51,18 +61,35 @@ export default function FeedbackList(props) {
   }
 
   return (
-    <List
-      grid={{ gutter: 10, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4 }}
-      header="FEEDBACK"
-      itemLayout="vertical"
-      dataSource={props.dataSource}
-      locale={{
-        emptyText: <div style={{ fontStyle: 'italic' }}>No feedback</div>,
-      }}
-      renderItem={feedback => renderItem(feedback)}
-      pagination={{
-        pageSize: 20,
-      }}
-    />
+    <>
+      <List
+        grid={{ gutter: 10, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4 }}
+        header="FEEDBACK"
+        itemLayout="vertical"
+        dataSource={props.dataSource}
+        locale={{
+          emptyText: <div style={{ fontStyle: 'italic' }}>No feedback</div>,
+        }}
+        renderItem={feedback => renderItem(feedback)}
+        pagination={{
+          pageSize: 20,
+        }}
+      />
+      <Modal
+        title="FEEDBACK DETAIL"
+        visible={isShowModal}
+        centered
+        footer={null}
+        onCancel={() => {
+          setIsShowModal(false)
+        }}
+      >
+        <Paragraph>
+          {currentFeedback.text || (
+            <span style={{ fontStyle: 'italic' }}>(No text)</span>
+          )}
+        </Paragraph>
+      </Modal>
+    </>
   )
 }
