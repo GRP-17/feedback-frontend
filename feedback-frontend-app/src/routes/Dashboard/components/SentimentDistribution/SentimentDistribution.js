@@ -7,6 +7,7 @@ import {
   Bar,
   Cell,
   Tooltip,
+  ResponsiveContainer,
 } from 'recharts'
 import PropTypes from 'prop-types'
 
@@ -18,24 +19,24 @@ export default function SentimentDistribution(props) {
   }
 
   return (
-    <BarChart
-      width={280}
-      height={150}
-      data={[
-        { sentiment: 'Positive', count: props.positive },
-        { sentiment: 'Neutral', count: props.neutral },
-        { sentiment: 'Negative', count: props.negative },
-      ]}
-    >
-      <CartesianGrid strokeDasharray="3 3" vertical={false} />
-      <XAxis dataKey="sentiment" />
-      <YAxis />
-      <Tooltip />
-      <Bar dataKey="count">
-        <Cell fill="#249688" />
-        <Cell fill="#f8a932" />
-        <Cell fill="#e74858" />
-      </Bar>
-    </BarChart>
+    <ResponsiveContainer width="100%">
+      <BarChart
+        data={[
+          { sentiment: 'Positive', count: props.positive },
+          { sentiment: 'Neutral', count: props.neutral },
+          { sentiment: 'Negative', count: props.negative },
+        ]}
+      >
+        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+        <XAxis dataKey="sentiment" />
+        <YAxis />
+        <Tooltip />
+        <Bar dataKey="count">
+          <Cell fill="#249688" />
+          <Cell fill="#f8a932" />
+          <Cell fill="#e74858" />
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
   )
 }

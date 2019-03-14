@@ -25,12 +25,11 @@ export default function MostCommonPhrases(props) {
 
   return (
     <Table
-      style={{ width: 280 }}
-      className="most common phrases"
+      size="small"
       columns={columns}
       dataSource={data}
-      scroll={{ x: 200, y: 200 }}
-      rowKey="term"
+      rowKey="phrase"
+      pagination={false}
     />
   )
 }

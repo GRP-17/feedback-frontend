@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Spin, message, Row, Col, Input } from 'antd'
+import { Spin, message, Row, Col, Input, Typography, Layout } from 'antd'
 import FeedbackVolume from './components/FeedbackVolume/FeedbackVolume'
 import FeedbackList from './components/FeedbackList/FeedbackList'
 import SentimentDistribution from './components/SentimentDistribution/SentimentDistribution'
@@ -9,7 +9,8 @@ import FeedbackAvgRating from './components/FeedbackAvgRating/FeedbackAvgRating'
 import MostCommonPhrases from './components/MostCommonPhrases/MostCommonPhrases'
 import RatingPerDay from './components/RatingPerDay/RatingPerDay'
 
-const Search = Input.Search
+const { Search } = Input
+const { Title } = Typography
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -74,29 +75,23 @@ export default class Dashboard extends Component {
 
   render() {
     return (
-      <div style={{ background: 'white', padding: 15 }}>
-        <div>
-          <h1>Dashboard</h1>
-        </div>
-        <Spin tip="Loading..." spinning={this.state.isLoading}>
-          <div>
-            <Row style={{ padding: '20px 0' }}>
-              <div>
-                <Col span={2}>
+      <Layout>
+        <Layout.Header>
+          <Title level={1} style={{ color: '#fff' }}>
+            Dashboard
+          </Title>
+        </Layout.Header>
+        <Layout.Content style={{ padding: 25 }}>
+          <div style={{ background: '#fff', padding: 25, minHeight: 280 }}>
+            <Spin tip="Loading..." spinning={this.state.isLoading}>
+              <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
+                <Col span={4}>
                   <FeedbackVolume volume={this.state.feedbackList.length} />
+                  <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
                 </Col>
-              </div>
-              <div>
                 <Col span={8}>
                   <RatingPerDay data={this.state.negativePerDay} />
                 </Col>
-              </div>
-              <div>
-                <Col span={2}>
-                  <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
-                </Col>
-              </div>
-              <div>
                 <Col span={5}>
                   <SentimentDistribution
                     positive={this.state.sentimentCount.POSITIVE}
@@ -104,34 +99,32 @@ export default class Dashboard extends Component {
                     neutral={this.state.sentimentCount.NEUTRAL}
                   />
                 </Col>
-              </div>
-              <div>
                 <Col span={7} style={{ padding: '0 15px' }}>
                   <RatingCountBreakdown count={this.state.ratingCount} />
                 </Col>
-              </div>
-            </Row>
+              </Row>
+
+              <br />
+
+              <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
+                <Col span={6}>
+                  <MostCommonPhrases
+                    datamap={this.state.feedbackCommonPhrases}
+                  />
+                </Col>
+                <Col span={18}>
+                  <Search
+                    placeholder="Search"
+                    onSearch={value => console.log(value)}
+                    enterButton="Search"
+                  />
+                  <FeedbackList dataSource={this.state.feedbackList} />
+                </Col>
+              </Row>
+            </Spin>
           </div>
-          <div>
-            <Search
-              placeholder="Search"
-              onSearch={value => console.log(value)}
-              enterButton="Search"
-              style={{ width: 300, padding: '20px 0' }}
-            />
-          </div>
-          <div>
-            <Row>
-              <Col span={6}>
-                <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
-              </Col>
-              <Col span={18}>
-                <FeedbackList dataSource={this.state.feedbackList} />
-              </Col>
-            </Row>
-          </div>
-        </Spin>
-      </div>
+        </Layout.Content>
+      </Layout>
     )
   }
 }
