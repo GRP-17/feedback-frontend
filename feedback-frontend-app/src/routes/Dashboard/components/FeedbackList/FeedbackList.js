@@ -7,7 +7,15 @@ const { Paragraph, Text } = Typography
 
 export default function FeedbackList(props) {
   FeedbackList.propTypes = {
-    dataSource: PropTypes.array.isRequired,
+    dataSource: PropTypes.arrayOf(
+      PropTypes.shape({
+        created: PropTypes.number.isRequired,
+        id: PropTypes.string.isRequired,
+        rating: PropTypes.number.isRequired,
+        sentiment: PropTypes.string.isRequired,
+        text: PropTypes.string.isRequired,
+      })
+    ).isRequired,
   }
 
   const [currentFeedback, setCurrentFeedback] = useState({})
