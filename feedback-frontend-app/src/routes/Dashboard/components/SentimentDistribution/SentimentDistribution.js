@@ -12,6 +12,11 @@ import {
 import PropTypes from 'prop-types'
 
 export default function SentimentDistribution(props) {
+  /**
+   * @prop positive - the number of positive feedbacks
+   * @prop negative - the number of negative feedbacks
+   * @prop neutral - the number of neutral feedbacks
+   */
   SentimentDistribution.propTypes = {
     positive: PropTypes.number.isRequired,
     negative: PropTypes.number.isRequired,

@@ -12,7 +12,9 @@ import RatingPerDay from './components/RatingPerDay/RatingPerDay'
 
 const { Search } = Input
 
+/** a class component, which is the top level of each dashboard page. */
 export default class Dashboard extends Component {
+  /** set the initial state */
   constructor(props) {
     super(props)
     this.state = {
@@ -38,15 +40,21 @@ export default class Dashboard extends Component {
     }
   }
 
+  /** a react life cycle method which is called when the component is
+   * mounted to the web page and is used here to request the data that
+   * is to be displayed from the API */
   componentDidMount() {
     this.getData()
   }
 
+  /** a function which requests data from the API */
   async getData() {
+    /** tell the user that page is loading the data by triggering the Spin component */
     this.setState({
       isLoading: true,
     })
 
+    /** try to make the request for all the data and set the state upon success */
     try {
       api
         .request('feedback_stats', {
@@ -72,7 +80,21 @@ export default class Dashboard extends Component {
       })
     }
   }
-
+  /**
+   * BasicLayout *header*             - the style and layout of the whole component (whole page).
+   *                                    The *header* is set to be a button linking back to the Home page
+   *                                    and the name of this dashboard.
+   * Spin                             - tells the user when the page is loading data.
+   * FeedbackVomue *volume*           - the total volume of feedback for this dashboard.
+   * FeedbackAvgRating *avgrating*    - the average rating over all feedbacks.
+   * RatingPerDay *data*              - a graph showing the amount of negative ratings each day.
+   * SentimentDistribution *positive* - a bar chart showing the different volumes of feedback recieved for each sentiment.
+   *             *negative* *neutral*
+   * RatingCountBreakdown *count*     - a bar chart showing the different volumes of feedback recieved for each rating.
+   * MostCommonPhrases *datamap*      - a list of the most common/interesting phrases that appear in the feedbacks and there volumes.
+   * Search                           - a search button for filtering the feedbacks shown
+   * FeedbackList *dataSource*        - Shows some feedback items for this dashboard.
+   */
   render() {
     return (
       <BasicLayout
