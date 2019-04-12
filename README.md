@@ -7,16 +7,26 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequesites
 *npm* - is used as the package manager to manage the dependencies. You will need npm on your machine inorder to install the required project dependencies.
 
-*node* - the project is a react app so it uses node
+*node* - the project is a react app so it uses node.
 
 ### Installing
-Firstly this is just the frontend of the app which needs a backend to communicate with (retrieve data from), so firstly you need to [setup a backend](https://github.com/GRP-17/feedback-backend)
+Firstly this is just the frontend of the app which needs a backend to communicate with (retrieve data from), so firstly you need to [setup a backend](https://github.com/GRP-17/feedback-backend) and someway of adding feedback to the backend, this will be done by [a feedback-component](https://github.com/GRP-17/feedback-component).
 
-## Dependencies
-The dependencies are handled by npm as the package manager.
+Once the backend is setup you will need:
+1. it's base url
 
-### Installation
-To install all dependencies move into the feedback-frontend-app folder and run `npm install`. This should install all dependencies necessary for this react app.
+Move into the [feedback-frontend-app](https://github.com/GRP-17/feedback-frontend/wiki/Project-File-Structure#feedback-frontend-app#feedback-frontend-app) folder and then run `npm install` and the dependencies should be installed to your system.
+
+You will need to add the base url to the config.js (in the src folder). This will allow the app to retrieve data from your backend and it can then display the data on this app.
+
+Congratulations it should be installed and working now. :D
+
+### Deployment
+To deploy this to a live system you just need to build the app files using `npm build` (inside the feedback-frontend-app folder).
+
+Using the Serve dependency you can serve these built files from a live system. `serve -s build`.
+
+This should be enough to get a live version of this app working.
 
 ### Index of dependencies
 1. "antd": "^3.15.0",
