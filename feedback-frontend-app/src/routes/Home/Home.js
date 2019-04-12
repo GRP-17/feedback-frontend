@@ -20,6 +20,15 @@ export default props => {
   const [dashboards, setDashboards] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 
+  const fetchDashboards = async () => {
+    setIsLoading(true)
+    const dashboards = await api
+      .request('dashboards')
+      .then(res => res._embedded.dashboardList)
+    setDashboards(dashboards)
+    setIsLoading(false)
+  }
+
   /**
    * The useEffects function allows you to perform side effects in functional components
    * (do some computation... can't normally do any in function components).
@@ -28,21 +37,17 @@ export default props => {
    * and then updates the state.
    */
   useEffect(() => {
-    const fetchDashboards = async () => {
-      setIsLoading(true)
-      const dashboards = await api
-        .request('dashboards')
-        .then(res => res._embedded.dashboardList)
-      setDashboards(dashboards)
-      setIsLoading(false)
-    }
     fetchDashboards()
   }, [])
 
   return (
     <BasicLayout header="Feedback Analysis">
       <Spin tip="Loading..." spinning={isLoading}>
-        <DashboardList dataSource={dashboards} />
+        <DashboardList
+          dataSource={dashboards}
+          onDataChange={fetchDashboards}
+          {...props}
+        />
       </Spin>
     </BasicLayout>
   )

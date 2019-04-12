@@ -20,7 +20,7 @@ export default function RatingPerDay(props) {
   RatingPerDay.propTypes = {
     data: PropTypes.arrayOf(
       PropTypes.shape({
-        date: PropTypes.string.isRequired,
+        date: PropTypes.number.isRequired, // timestamp
         volume: PropTypes.number.isRequired,
       })
     ).isRequired,
