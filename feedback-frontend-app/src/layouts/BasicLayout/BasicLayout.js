@@ -17,8 +17,8 @@ export default function BasicLayout(props) {
    * @prop children - the main page body/content
    */
   BasicLayout.propTypes = {
-    header: PropTypes.element.isRequired,
-    children: PropTypes.element.isRequired,
+    header: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
+    children: PropTypes.oneOfType([PropTypes.element, PropTypes.string]),
   }
 
   return (
