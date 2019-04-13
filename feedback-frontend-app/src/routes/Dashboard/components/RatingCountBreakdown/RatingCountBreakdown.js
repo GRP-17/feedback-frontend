@@ -12,8 +12,16 @@ import {
 import PropTypes from 'prop-types'
 
 export default function RatingCountBreakdown(props) {
+
+
+  /** Dynamically work out the width of the Y-Axis based on length of longest value */
+  const value_lengths = Object.keys(props.count).map(e => {
+    return props.count[e].toString().length
+  })
+  const min_width = 8 + 10 * Math.max(1, ...value_lengths)
+
   return (
-    <ResponsiveContainer width="100%">
+    <ResponsiveContainer width="100%" height={200}>
       <BarChart
         data={[
           { rating: 'Five', count: props.count[5] },
@@ -23,12 +31,12 @@ export default function RatingCountBreakdown(props) {
           { rating: 'One', count: props.count[1] },
         ]}
       >
-        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="rating" />
-        <YAxis />
+        <CartesianGrid strokearray="3 3" vertical={false} />
+        <XAxis dataKey="rating"/>
+        <YAxis width={min_width}/>
         <Tooltip />
         <Bar dataKey="count">
-          <Cell fill="#249688" />
+          <Cell fill="#249688"/>
           <Cell fill="#03cfb7" />
           <Cell fill="#f8a932" />
           <Cell fill="#ff8a70" />
