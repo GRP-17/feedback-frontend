@@ -55,7 +55,7 @@ This should be enough to get a live version of this app working.
 ```
 
 ## Licence
-This project is licensed under the MIT License.
+This project is licensed under the MIT License. See [LICENCE.md](/LICENCE)
 
 ## Related
 - [feedback-backend](https://github.com/GRP-17/feedback-backend)
