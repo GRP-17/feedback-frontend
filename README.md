@@ -20,6 +20,8 @@ Move into the [feedback-frontend-app](https://github.com/GRP-17/feedback-fronten
 $ npm install
 ```
 
+![npm install example](https://user-images.githubusercontent.com/43950567/56083270-78c75200-5e1a-11e9-991a-d926fa851b48.PNG)
+
 You will need to add the base url to the config.js (in the src folder). This will allow the app to retrieve data from your backend and it can then display the data on this app.
 
 Congratulations it should be installed and working now :D
