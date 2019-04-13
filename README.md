@@ -34,7 +34,12 @@ $ serve -s build
 
 This should be enough to get a live version of this app working.
 
-### Index of dependencies
+
+## Built with
+- [React.js](https://reactjs.org/) - the javascript framework used
+- [npm](https://www.npmjs.com/) - dependency manager
+
+## Index of dependencies
 ```
 1. "antd": "^3.15.0", // A UI desgin library.
 2. "axios": "^0.18.0", // A library for sending http requests e.g. POST, GET etc...
@@ -48,6 +53,9 @@ This should be enough to get a live version of this app working.
 10. "recharts": "^1.4.2", // A UI design library for graphs.
 11. "serve": "^10.1.1" // Used to serve the built files on a live system.
 ```
+
+## Licence
+This project is licensed under the MIT License.
 
 ## Related
 - [feedback-backend](https://github.com/GRP-17/feedback-backend)
