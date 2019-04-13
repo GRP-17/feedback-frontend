@@ -26,6 +26,13 @@ You will need to add the base url to the config.js (in the src folder). This wil
 
 ![base url example](https://user-images.githubusercontent.com/43950567/56083316-1b7fd080-5e1b-11e9-9f02-95c3aff80121.PNG)
 
+once you are ready to launch it for development and testing you can start it locally using `npm start`
+```bash
+$ npm start
+```
+
+![npm start example](https://user-images.githubusercontent.com/43950567/56084106-2d1aa580-5e26-11e9-8d45-3bf21d979341.PNG)
+
 Congratulations it should be installed and working now :D
 
 ### Deployment
