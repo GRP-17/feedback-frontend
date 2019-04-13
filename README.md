@@ -54,8 +54,8 @@ This should be enough to get a live version of this app working.
 11. "serve": "^10.1.1" // Used to serve the built files on a live system.
 ```
 
-## Licence
-This project is licensed under the MIT License. See [LICENCE.md](/LICENCE)
+## License
+This project is licensed under the MIT License. See [LICENSE.md](/LICENSE)
 
 ## Related
 - [feedback-backend](https://github.com/GRP-17/feedback-backend)
