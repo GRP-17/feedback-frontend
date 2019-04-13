@@ -1,4 +1,5 @@
 # feedback-frontend
+
 The frontend of the application for feedback analysis.
 
 ## Getting Started
@@ -54,19 +55,20 @@ This should be enough to get a live version of this app working.
 - [npm](https://www.npmjs.com/) - dependency manager
 
 ## Index of dependencies
-```
-1. "antd": "^3.15.0", // A UI desgin library.
-2. "axios": "^0.18.0", // A library for sending http requests e.g. POST, GET etc...
-3. "babel-plugin-import": "^1.11.0",
-4. "moment": "^2.24.0",
-5. "react": "^16.8.1", 
-6. "react-app-rewired": "^1.6.2",
-7. "react-dom": "^16.8.1",
-8. "react-router-dom": "^4.3.1", // Used to add different paths e.g. /dashboards , /home etc... 
-9. "react-scripts": "2.1.1",
-10. "recharts": "^1.4.2", // A UI design library for graphs.
-11. "serve": "^10.1.1" // Used to serve the built files on a live system.
-```
+
+|                          Dependency                          |  Version  |                         Description                          |                            Usage                             |
+| :----------------------------------------------------------: | :-------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+|                 [antd](https://ant.design/)                  | `^3.15.0` | An enterprise-class UI design language and React-based implementation with a set of high-quality React components |         Used to style most of appearance of the app.         |
+|           [axios](https://github.com/axios/axios)            | `^0.18.0` |    Promise based HTTP client for the browser and node.js     |      As a convenient tool to make requests to backend.       |
+| [babel-plugin-import](https://github.com/ant-design/babel-plugin-import) | `^1.11.0` | A babel plugin for importing components on demand ([How does it work?](https://ant.design/docs/react/getting-started#Import-on-Demand)) | Used to import `antd` components on demand so as to reduce the size of the final built app. |
+|                [moment](http://momentjs.com/)                | `^2.24.0` |       Parse, validate, manipulate, and display dates.        | Used to parse the date object / timestamp sent from backend as formatted date string to be shown. |
+|                [react](https://reactjs.org/)                 | `^16.8.1` |      A JavaScript library for building user interfaces.      |         A base framework language to build our app.          |
+| [react-app-rewired](https://github.com/timarney/react-app-rewired) | `^1.6.2`  | One of create-react-app's custom config solutions: we use this to customize the default webpack config. | Used to customize the webpack config so as to import style files on demand. |
+|     [react-dom](https://reactjs.org/docs/react-dom.html)     | `^16.8.1` | This package provides DOM-specific methods that can be used at the top level of app. |         As a necessary peer dependency with `react`.         |
+|  [react-router-dom](https://reacttraining.com/react-router)  | `^4.3.1`  |                Declarative routing for React.                |               Used to navigate between pages.                |
+| [react-scripts](https://github.com/facebook/create-react-app) |  `2.1.1`  | This package includes scripts and configuration used by [Create React App](https://github.com/facebook/create-react-app). | Used to run development and build the production of the react app. |
+|               [recharts](http://recharts.org)                | `^1.4.2`  |   A composable charting library built on React components.   |             Used to render graphs on dashboard.              |
+|            [serve](https://github.com/zeit/serve)            | `^10.1.1` |          Static file serving and directory listing.          |        Used to serve the app on a server like Heroku.        |
 
 ## License
 This project is licensed under the MIT License. See [LICENSE.md](/LICENSE)
