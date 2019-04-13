@@ -11,7 +11,21 @@ import {
 import PropTypes from 'prop-types'
 import moment from 'moment'
 
-function RatingPerDay(props) {
+export default function RatingPerDay(props) {
+  /**
+   * @prop data - an array of each day in the last month and the frequency of negative ratings
+   *  date - the date
+   *  volume - the number of negative ratings that day
+   */
+  RatingPerDay.propTypes = {
+    data: PropTypes.arrayOf(
+      PropTypes.shape({
+        date: PropTypes.number.isRequired, // timestamp
+        volume: PropTypes.number.isRequired,
+      })
+    ).isRequired,
+  }
+
   const data = props.data.map(el => ({
     date: moment(el.date).format('YYYY/MM/DD'),
     volume: el.volume,
@@ -29,9 +43,3 @@ function RatingPerDay(props) {
     </ResponsiveContainer>
   )
 }
-
-RatingPerDay.propTypes = {
-  data: PropTypes.arrayOf(PropTypes.object).isRequired,
-}
-
-export default RatingPerDay
