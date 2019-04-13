@@ -13,7 +13,7 @@ These instructions will get you a copy of the project up and running on your loc
 Firstly this is just the frontend of the app which needs a backend to communicate with (retrieve data from), so firstly you need to [setup a backend](https://github.com/GRP-17/feedback-backend) and someway of adding feedback to the backend, this will be done by [a feedback-component](https://github.com/GRP-17/feedback-component) (although any method of posting data to the backend can work e.g. curl).
 
 Once the backend is setup you will need:
-1. it's base url (e.g. `.../`)
+1. it's base url (e.g. `https://*your app name*.herokuapp.com/` for a heroku deployment.)
 
 Move into the [feedback-frontend-app](https://github.com/GRP-17/feedback-frontend/wiki/Project-File-Structure#feedback-frontend-app) folder and then run `npm install` and the dependencies should be installed to your system.
 
@@ -37,7 +37,7 @@ This should be enough to get a live version of this app working.
 5. "react": "^16.8.1", 
 6. "react-app-rewired": "^1.6.2",
 7. "react-dom": "^16.8.1",
-8. "react-router-dom": "^4.3.1", // Used to add different paths e.g. */dashboards* , */home* etc... 
+8. "react-router-dom": "^4.3.1", // Used to add different paths e.g. /dashboards , /home etc... 
 9. "react-scripts": "2.1.1",
 10. "recharts": "^1.4.2", // A UI design library for graphs.
 11. "serve": "^10.1.1" // Used to serve the built files on a live system.
