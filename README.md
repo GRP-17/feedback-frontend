@@ -16,6 +16,9 @@ Once the backend is setup you will need:
 1. it's base url (e.g. `https://*your app name*.herokuapp.com/` for a heroku deployment.)
 
 Move into the [feedback-frontend-app](https://github.com/GRP-17/feedback-frontend/wiki/Project-File-Structure#feedback-frontend-app) folder and then run `npm install` and the dependencies should be installed to your system.
+```bash
+$ npm install
+```
 
 You will need to add the base url to the config.js (in the src folder). This will allow the app to retrieve data from your backend and it can then display the data on this app.
 
@@ -24,7 +27,10 @@ Congratulations it should be installed and working now :D
 ### Deployment
 To deploy this to a live system you just need to build the app files using `npm build` (inside the feedback-frontend-app folder).
 
-Using the `serve` dependency you can serve these built files from a live system. Using `serve -s build`.
+Using the `serve` dependency you can serve these built files from a live system. 
+```bash
+$ serve -s build
+```
 
 This should be enough to get a live version of this app working.
 
@@ -44,5 +50,5 @@ This should be enough to get a live version of this app working.
 ```
 
 ## Related
-  [feedback-backend](https://github.com/GRP-17/feedback-backend)
-  [feedback-component](https://github.com/GRP-17/feedback-component)
+- [feedback-backend](https://github.com/GRP-17/feedback-backend)
+- [feedback-component](https://github.com/GRP-17/feedback-component)
