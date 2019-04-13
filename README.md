@@ -29,7 +29,10 @@ You will need to add the base url to the config.js (in the src folder). This wil
 Congratulations it should be installed and working now :D
 
 ### Deployment
-To deploy this to a live system you just need to build the app files using `npm build` (inside the feedback-frontend-app folder).
+To deploy this to a live system you just need to build the app files using `npm run build` (inside the feedback-frontend-app folder).
+```bash
+$ nom run build
+```
 
 Using the `serve` dependency you can serve these built files from a live system. 
 ```bash
