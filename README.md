@@ -24,6 +24,8 @@ $ npm install
 
 You will need to add the base url to the config.js (in the src folder). This will allow the app to retrieve data from your backend and it can then display the data on this app.
 
+![base url example](https://user-images.githubusercontent.com/43950567/56083316-1b7fd080-5e1b-11e9-9f02-95c3aff80121.PNG)
+
 Congratulations it should be installed and working now :D
 
 ### Deployment
