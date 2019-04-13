@@ -23,8 +23,15 @@ export default function SentimentDistribution(props) {
     neutral: PropTypes.number.isRequired,
   }
 
+  /** Dynamically work out the width of the Y-Axis based on length of longest value */
+  const min_width = 8 + 10 * Math.max(1,
+    props.negative.toString().length, 
+    props.positive.toString().length, 
+    props.neutral.toString().length
+    )
+
   return (
-    <ResponsiveContainer width="100%">
+    <ResponsiveContainer width="100%" height={200}>
       <BarChart
         data={[
           { sentiment: 'Positive', count: props.positive },
@@ -32,9 +39,9 @@ export default function SentimentDistribution(props) {
           { sentiment: 'Negative', count: props.negative },
         ]}
       >
-        <CartesianGrid strokeDasharray="3 3" vertical={false} />
-        <XAxis dataKey="sentiment" />
-        <YAxis />
+        <CartesianGrid strokearray="3 3" vertical={false} />
+        <XAxis dataKey="sentiment"/>
+        <YAxis width={min_width}/>
         <Tooltip />
         <Bar dataKey="count">
           <Cell fill="#249688" />

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Spin, message, Row, Col, Input, Button } from 'antd'
+import { Spin, message, Row, Col, Input, Button, Card } from 'antd'
 import BasicLayout from './../../layouts/BasicLayout/BasicLayout'
 import FeedbackVolume from './components/FeedbackVolume/FeedbackVolume'
 import FeedbackList from './components/FeedbackList/FeedbackList'
@@ -80,21 +80,7 @@ export default class Dashboard extends Component {
       })
     }
   }
-  /**
-   * BasicLayout *header*             - the style and layout of the whole component (whole page).
-   *                                    The *header* is set to be a button linking back to the Home page
-   *                                    and the name of this dashboard.
-   * Spin                             - tells the user when the page is loading data.
-   * FeedbackVomue *volume*           - the total volume of feedback for this dashboard.
-   * FeedbackAvgRating *avgrating*    - the average rating over all feedbacks.
-   * RatingPerDay *data*              - a graph showing the amount of negative ratings each day.
-   * SentimentDistribution *positive* - a bar chart showing the different volumes of feedback recieved for each sentiment.
-   *             *negative* *neutral*
-   * RatingCountBreakdown *count*     - a bar chart showing the different volumes of feedback recieved for each rating.
-   * MostCommonPhrases *datamap*      - a list of the most common/interesting phrases that appear in the feedbacks and there volumes.
-   * Search                           - a search button for filtering the feedbacks shown
-   * FeedbackList *dataSource*        - Shows some feedback items for this dashboard.
-   */
+
   render() {
     return (
       <BasicLayout
@@ -112,22 +98,24 @@ export default class Dashboard extends Component {
       >
         <Spin tip="Loading..." spinning={this.state.isLoading}>
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
-            <Col span={4}>
-              <FeedbackVolume volume={this.state.feedbackList.length} />
-              <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
+            <Col span={6}>
+              <Card title="Sentiment Distribution" bordered={false}>
+                <SentimentDistribution
+                  positive={this.state.sentimentCount.POSITIVE}
+                  negative={this.state.sentimentCount.NEGATIVE}
+                  neutral={this.state.sentimentCount.NEUTRAL}
+                />
+              </Card>
+            </Col>
+            <Col span={10}>
+                <Card title="Negative Feedback Distribution" bordered={false}>
+                  <RatingPerDay data={this.state.negativePerDay} />
+                </Card>
             </Col>
             <Col span={8}>
-              <RatingPerDay data={this.state.negativePerDay} />
-            </Col>
-            <Col span={5}>
-              <SentimentDistribution
-                positive={this.state.sentimentCount.POSITIVE}
-                negative={this.state.sentimentCount.NEGATIVE}
-                neutral={this.state.sentimentCount.NEUTRAL}
-              />
-            </Col>
-            <Col span={7} style={{ padding: '0 15px' }}>
-              <RatingCountBreakdown count={this.state.ratingCount} />
+              <Card title="Rating Distribution" bordered={false}>
+                <RatingCountBreakdown count={this.state.ratingCount} />
+              </Card>
             </Col>
           </Row>
 
@@ -135,6 +123,10 @@ export default class Dashboard extends Component {
 
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
             <Col span={6}>
+              <FeedbackVolume volume={this.state.feedbackList.length} />
+              <br/>
+              <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
+              <br/>
               <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
             </Col>
             <Col span={18}>
