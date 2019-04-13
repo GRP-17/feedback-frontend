@@ -42,3 +42,7 @@ This should be enough to get a live version of this app working.
 10. "recharts": "^1.4.2", // A UI design library for graphs.
 11. "serve": "^10.1.1" // Used to serve the built files on a live system.
 ```
+
+## Related
+  [feedback-backend](https://github.com/GRP-17/feedback-backend)
+  [feedback-component](https://github.com/GRP-17/feedback-component)
