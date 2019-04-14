@@ -4,7 +4,11 @@ import { baseUrl, appUrl /* , corsHelper */ } from '../config'
 /**
  * Usage:
  * const api = new Api(baseUrl);
- * api.request('feedback', { method: "get", ... });
+ * api.request('feedback', { method: 'get', ... });
+ *
+ * Append url parameters:
+ * api.request('dashboard', { method: 'delete', appendUrl: '/id' + 123 })
+ * => '/dashbaord/123'
  */
 class Api {
   constructor() {
@@ -25,11 +29,13 @@ class Api {
     await this._checkResources()
     try {
       const url = this.resources[resourceName]
-      configs.url = this._parseUrl(url)
+      configs.url =
+        this._parseUrl(url) + (configs.appendUrl ? configs.appendUrl : '')
       configs = { ...configs, ...this.configs }
       const { data } = await axios(configs)
       return data
     } catch (e) {
+      throw e
       // TODO: error handling
     }
   }

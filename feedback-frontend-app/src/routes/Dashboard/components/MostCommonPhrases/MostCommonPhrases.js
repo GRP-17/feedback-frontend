@@ -3,13 +3,19 @@ import { Table } from 'antd'
 import PropTypes from 'prop-types'
 
 export default function MostCommonPhrases(props) {
+  /**
+   * @prop datamap - an array containing all the terms and their frequencies
+   *
+   *  term - the term
+   *  frequency - the number of appearances for that term
+   */
   MostCommonPhrases.propTypes = {
     datamap: PropTypes.arrayOf(
       PropTypes.shape({
-        volume: PropTypes.number,
-        phrase: PropTypes.string,
+        term: PropTypes.string.isRequired,
+        frequency: PropTypes.number.isRequired,
       })
-    ),
+    ).isRequired,
   }
 
   const columns = [
@@ -18,16 +24,18 @@ export default function MostCommonPhrases(props) {
   ]
 
   const data = props.datamap.map(el => ({
-    key: el.phrase,
-    volume: el.volume,
-    phrase: el.phrase,
+    key: el.term,
+    volume: el.frequency,
+    phrase: el.term,
   }))
 
   return (
     <Table
-      className="most common phrases"
+      size="small"
       columns={columns}
       dataSource={data}
+      rowKey="phrase"
+      pagination={false}
     />
   )
 }
