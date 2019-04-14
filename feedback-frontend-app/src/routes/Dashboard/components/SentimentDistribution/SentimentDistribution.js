@@ -34,9 +34,9 @@ export default function SentimentDistribution(props) {
     <ResponsiveContainer width="100%" height={200}>
       <BarChart
         data={[
-          { sentiment: 'Positive', count: props.positive },
-          { sentiment: 'Neutral', count: props.neutral },
           { sentiment: 'Negative', count: props.negative },
+          { sentiment: 'Neutral', count: props.neutral },
+          { sentiment: 'Positive', count: props.positive },
         ]}
       >
         <CartesianGrid strokearray="3 3" vertical={false} />
@@ -44,9 +44,9 @@ export default function SentimentDistribution(props) {
         <YAxis width={min_width}/>
         <Tooltip />
         <Bar dataKey="count">
-          <Cell fill="#249688" />
-          <Cell fill="#f8a932" />
           <Cell fill="#e74858" />
+          <Cell fill="#f8a932" />
+          <Cell fill="#249688" />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
