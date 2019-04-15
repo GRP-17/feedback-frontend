@@ -13,9 +13,9 @@ import PropTypes from 'prop-types'
 
 export default function SentimentDistribution(props) {
   /**
-   * @prop positive - the number of positive feedbacks
-   * @prop negative - the number of negative feedbacks
-   * @prop neutral - the number of neutral feedbacks
+   * @prop {number} positive - the number of positive feedbacks
+   * @prop {number} negative - the number of negative feedbacks
+   * @prop {number} neutral - the number of neutral feedbacks
    */
   SentimentDistribution.propTypes = {
     positive: PropTypes.number.isRequired,
@@ -24,11 +24,15 @@ export default function SentimentDistribution(props) {
   }
 
   /** Dynamically work out the width of the Y-Axis based on length of longest value */
-  const min_width = 8 + 10 * Math.max(1,
-    props.negative.toString().length, 
-    props.positive.toString().length, 
-    props.neutral.toString().length
-    )
+  const min_width =
+    8 +
+    10 *
+      Math.max(
+        1,
+        props.negative.toString().length,
+        props.positive.toString().length,
+        props.neutral.toString().length
+      )
 
   return (
     <ResponsiveContainer width="100%" height={200}>
@@ -40,8 +44,8 @@ export default function SentimentDistribution(props) {
         ]}
       >
         <CartesianGrid strokearray="3 3" vertical={false} />
-        <XAxis dataKey="sentiment"/>
-        <YAxis width={min_width}/>
+        <XAxis dataKey="sentiment" />
+        <YAxis width={min_width} />
         <Tooltip />
         <Bar dataKey="count">
           <Cell fill="#e74858" />

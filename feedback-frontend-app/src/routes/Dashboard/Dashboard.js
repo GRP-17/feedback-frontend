@@ -17,6 +17,19 @@ export default class Dashboard extends Component {
   /** set the initial state */
   constructor(props) {
     super(props)
+    /**
+     * parameters for the state
+     * @param {Boolean} isLoading - wether the dashboard is waiting to load or not
+     * @param {array} feedbackList - an array of feedback items for the current page
+     * @param {number} feedbackCount - the total count of feedbacks on this dashboard
+     * @param {{}} sentimentCount - an obejct with volumes for each sentiment
+     * @param {{}}}ratingCount - an object with the volumes for each rating
+     * @param {number} feedbackAvgRating - the average rating for this dashboard
+     * @param {array} feedbackCommonPhrases - an array of common phrase objects
+     * @param {array} negativePerDay - an array of data for volume of negative ratings each day
+     * @param {String} dashboardName - the name of the dashboard
+     * @param {number} currentPage - the number of the current page that is selected
+     */
     this.state = {
       isLoading: false,
       feedbackList: [],

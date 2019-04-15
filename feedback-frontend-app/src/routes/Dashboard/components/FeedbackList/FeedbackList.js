@@ -9,24 +9,11 @@ import api from '../../../../utils/Api'
 const { Paragraph, Text } = Typography
 
 export default class FeedbackList extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      currentFeedback: {},
-      isShowModal: false,
-      updatingData: false,
-    }
-    this.onPinnedChanged = this.onPinnedChanged.bind(this)
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.dataSource !== prevProps.dataSource) {
-      this.setState({
-        currentFeedback: this.props.dataSource[0],
-      })
-    }
-  }
-
+  /**
+   * @prop {array} dataSource[] - an array of feedback objects.
+   * @prop {number} totalVolume - the total number of feedback items in the database for this dashboard
+   * @prop {func} onChangePage - a function which handles the updating of dataSource when a new page is selected
+   */
   static propTypes = {
     dataSource: PropTypes.arrayOf(
       PropTypes.shape({
@@ -40,16 +27,49 @@ export default class FeedbackList extends Component {
     ).isRequired,
     totalVolume: PropTypes.number.isRequired,
     onChangePage: PropTypes.func.isRequired,
-    dashboardId: PropTypes.string.isRequired,
   }
 
-  // toggle pinned of the current feedback
+  constructor(props) {
+    super(props)
+
+    /**
+     * the parameters for the state
+     * @param {{}} currentFeedback - the current feedback object loaded into the Modal popup
+     * @param {Boolean} isShowModal - whether to show the Modal popup or not
+     */
+    this.state = {
+      currentFeedback: {},
+      isShowModal: false,
+    }
+    this.onPinnedChanged = this.onPinnedChanged.bind(this)
+  }
+
+  /**
+   *   Lifecycle method that is called when the props are updated
+   *   and used here to set the current feedback when the props with data are passed
+   */
+
+  componentDidUpdate(prevProps) {
+    if (
+      this.props.dataSource !== prevProps.dataSource &&
+      this.props.dataSource.length !== 0
+    ) {
+      this.setState({
+        currentFeedback: this.props.dataSource[0],
+      })
+    }
+  }
+
+  /**
+   * toggle pinned of the current feedback
+   * and 'put' the updated value back into the database
+   */
+
   onPinnedChanged() {
     var upFeedback = this.state.currentFeedback
     upFeedback.pinned = !this.state.currentFeedback.pinned
     this.setState({
       currentFeedback: upFeedback,
-      updatingData: true,
     })
 
     try {
@@ -62,13 +82,13 @@ export default class FeedbackList extends Component {
       })
     } catch (e) {
       message.error(e.toString())
-    } finally {
-      this.setState({
-        updatingData: false,
-      })
     }
   }
 
+  /**
+   * used to specify how each list item should render/look
+   * @param {{}} feedback each indurvidual feedback item in the list
+   */
   renderItem(feedback) {
     const sentiment2color = {
       POSITIVE: '#2b9588',
@@ -175,7 +195,6 @@ export default class FeedbackList extends Component {
             })
             this.props.onChangePage()
           }}
-          confirmLoading={this.state.updatingData}
         >
           <Paragraph>
             {this.state.currentFeedback.text || (

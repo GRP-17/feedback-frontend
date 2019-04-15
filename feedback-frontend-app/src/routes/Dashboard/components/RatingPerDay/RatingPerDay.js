@@ -13,7 +13,7 @@ import moment from 'moment'
 
 export default function RatingPerDay(props) {
   /**
-   * @prop data - an array of each day in the last month and the frequency of negative ratings
+   * @prop {array} data - an array of each day in the last month and the frequency of negative ratings
    *  date - the date
    *  volume - the number of negative ratings that day
    */

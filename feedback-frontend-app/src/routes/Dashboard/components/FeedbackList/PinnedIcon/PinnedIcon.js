@@ -3,6 +3,12 @@ import { Icon } from 'antd'
 import PropTypes from 'prop-types'
 
 export default function PinnedIcon(props) {
+  /**
+   * @prop {Boolean} pinned - a boolean that says if the Icon should be displayed as pinned or not
+   * @prop {String} size - what size should the Icon be
+   * @prop {func} onPinnedChanged - a function that handles what happens when the Icon is clicked (if clickable)
+   * @prop {Boolean} clickable - says whether the Icon takes action on click or not.
+   */
   PinnedIcon.propTypes = {
     pinned: PropTypes.bool.isRequired,
     size: PropTypes.oneOf(['small', 'medium']).isRequired,
@@ -10,6 +16,10 @@ export default function PinnedIcon(props) {
     clickable: PropTypes.bool.isRequired,
   }
 
+  /**
+   *
+   * @param {Boolean} pinned Boolean used to choose the theme
+   */
   const setTheme = pinned => {
     switch (pinned) {
       case true:
@@ -19,6 +29,10 @@ export default function PinnedIcon(props) {
     }
   }
 
+  /**
+   *
+   * @param {String} size String variable used to choose the size to display the Icon
+   */
   const setStyle = size => {
     switch (size) {
       case 'medium':
@@ -33,7 +47,7 @@ export default function PinnedIcon(props) {
     }
   }
 
-  const icon = (
+  return (
     <Icon
       type="pushpin"
       theme={setTheme(props.pinned)}
@@ -46,6 +60,4 @@ export default function PinnedIcon(props) {
       }}
     />
   )
-
-  return icon
 }
