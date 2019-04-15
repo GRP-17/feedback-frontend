@@ -37,6 +37,7 @@ export default class Dashboard extends Component {
       feedbackCommonPhrases: [],
       negativePerDay: [],
       dashboardName: 'Dashboard',
+      currentPage: 1,
     }
 
     // stops the context/owner/this being lost when passing the function down to a sub-component.
@@ -85,9 +86,10 @@ export default class Dashboard extends Component {
   }
 
   // handles updating the feedbackList state when the user selects a different page of feedback.
-  async onChangePage(page) {
+  async onChangePage(page = this.state.currentPage) {
     this.setState({
       isLoading: true,
+      currentPage: page,
     })
 
     /** try to make the request for all the data and set the state upon success */
@@ -172,6 +174,7 @@ export default class Dashboard extends Component {
                 dataSource={this.state.feedbackList}
                 totalVolume={this.state.feedbackCount}
                 onChangePage={this.onChangePage}
+                dashboardId={this.props.match.params.id}
               />
             </Col>
           </Row>
