@@ -109,7 +109,6 @@ export default class Dashboard extends Component {
             </Col>
             <Col span={10}>
               <Card title="Negative Feedback Distribution" bordered={false}>
-                <FeedbackVolume volume={this.state.feedbackCount} />
                 <RatingPerDay data={this.state.negativePerDay} />
               </Card>
             </Col>
@@ -124,7 +123,7 @@ export default class Dashboard extends Component {
 
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
             <Col span={6}>
-              <FeedbackVolume volume={this.state.feedbackList.length} />
+              <FeedbackVolume volume={this.state.feedbackCount} />
               <br />
               <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
               <br />
