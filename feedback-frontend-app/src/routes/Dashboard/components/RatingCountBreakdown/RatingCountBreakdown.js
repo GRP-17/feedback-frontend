@@ -24,11 +24,11 @@ export default function RatingCountBreakdown(props) {
     <ResponsiveContainer width="100%" height={200}>
       <BarChart
         data={[
-          { rating: 'Five', count: props.count[5] },
-          { rating: 'Four', count: props.count[4] },
-          { rating: 'Three', count: props.count[3] },
-          { rating: 'Two', count: props.count[2] },
           { rating: 'One', count: props.count[1] },
+          { rating: 'Two', count: props.count[2] },
+          { rating: 'Three', count: props.count[3] },
+          { rating: 'Four', count: props.count[4] },
+          { rating: 'Five', count: props.count[5] },
         ]}
       >
         <CartesianGrid strokearray="3 3" vertical={false} />
@@ -36,11 +36,11 @@ export default function RatingCountBreakdown(props) {
         <YAxis width={min_width}/>
         <Tooltip />
         <Bar dataKey="count">
-          <Cell fill="#249688"/>
-          <Cell fill="#03cfb7" />
-          <Cell fill="#f8a932" />
-          <Cell fill="#ff8a70" />
           <Cell fill="#e74858" />
+          <Cell fill="#ff8a70" />
+          <Cell fill="#f8a932" />
+          <Cell fill="#03cfb7" />
+          <Cell fill="#249688"/>
         </Bar>
       </BarChart>
     </ResponsiveContainer>

@@ -5,7 +5,7 @@ The frontend of the application for feedback analysis.
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system. 
 
-### Prerequesites
+### Prerequisites
 *npm* - is used as the package manager to manage the dependencies. You will need npm on your machine inorder to install the required project dependencies.
 
 *node.js* - the project is a react app so it uses node.
@@ -34,7 +34,7 @@ $ npm start
 
 ![npm start example](https://user-images.githubusercontent.com/43950567/56084106-2d1aa580-5e26-11e9-8d45-3bf21d979341.PNG)
 
-Congratulations it should be installed and working now :D
+Congratulations! It should be installed and working now.
 
 ### Deployment
 To deploy this to a live system you just need to build the app files using `npm run build` (inside the feedback-frontend-app folder).

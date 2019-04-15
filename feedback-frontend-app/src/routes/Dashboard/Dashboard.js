@@ -38,6 +38,9 @@ export default class Dashboard extends Component {
       negativePerDay: [],
       dashboardName: 'Dashboard',
     }
+
+    // stops the context/owner/this being lost when passing the function down to a sub-component.
+    this.onChangePage = this.onChangePage.bind(this)
   }
 
   /** a react life cycle method which is called when the component is
@@ -81,6 +84,36 @@ export default class Dashboard extends Component {
     }
   }
 
+  // handles updating the feedbackList state when the user selects a different page of feedback.
+  async onChangePage(page) {
+    this.setState({
+      isLoading: true,
+    })
+
+    /** try to make the request for all the data and set the state upon success */
+    try {
+      api
+        .request('feedback_paged', {
+          params: {
+            dashboardId: this.props.match.params.id,
+            page: page,
+            pageSize: 20,
+          },
+        })
+        .then(res => {
+          this.setState({
+            feedbackList: res._embedded.feedbackList, //feedback,
+          })
+        })
+    } catch (e) {
+      message.error(e.toString())
+    } finally {
+      this.setState({
+        isLoading: false,
+      })
+    }
+  }
+
   render() {
     return (
       <BasicLayout
@@ -108,9 +141,9 @@ export default class Dashboard extends Component {
               </Card>
             </Col>
             <Col span={10}>
-                <Card title="Negative Feedback Distribution" bordered={false}>
-                  <RatingPerDay data={this.state.negativePerDay} />
-                </Card>
+              <Card title="Negative Feedback Distribution" bordered={false}>
+                <RatingPerDay data={this.state.negativePerDay} />
+              </Card>
             </Col>
             <Col span={8}>
               <Card title="Rating Distribution" bordered={false}>
@@ -123,10 +156,10 @@ export default class Dashboard extends Component {
 
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
             <Col span={6}>
-              <FeedbackVolume volume={this.state.feedbackList.length} />
-              <br/>
+              <FeedbackVolume volume={this.state.feedbackCount} />
+              <br />
               <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
-              <br/>
+              <br />
               <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
             </Col>
             <Col span={18}>
@@ -135,7 +168,11 @@ export default class Dashboard extends Component {
                 onSearch={value => console.log(value)}
                 enterButton="Search"
               />
-              <FeedbackList dataSource={this.state.feedbackList} />
+              <FeedbackList
+                dataSource={this.state.feedbackList}
+                totalVolume={this.state.feedbackCount}
+                onChangePage={this.onChangePage}
+              />
             </Col>
           </Row>
         </Spin>
