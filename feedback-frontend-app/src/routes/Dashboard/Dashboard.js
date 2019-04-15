@@ -38,6 +38,9 @@ export default class Dashboard extends Component {
       negativePerDay: [],
       dashboardName: 'Dashboard',
     }
+
+    // stops the context/owner/this being lost when passing the function down to a sub-component.
+    this.onChangePage = this.onChangePage.bind(this)
   }
 
   /** a react life cycle method which is called when the component is
@@ -70,6 +73,36 @@ export default class Dashboard extends Component {
             feedbackCommonPhrases: res.feedback_common_phrases.result,
             negativePerDay: res.feedback_rating_negative.result,
             dashboardName: res.dashboard_name,
+          })
+        })
+    } catch (e) {
+      message.error(e.toString())
+    } finally {
+      this.setState({
+        isLoading: false,
+      })
+    }
+  }
+
+  // handles updating the feedbackList state when the user selects a different page of feedback.
+  async onChangePage(page) {
+    this.setState({
+      isLoading: true,
+    })
+
+    /** try to make the request for all the data and set the state upon success */
+    try {
+      api
+        .request('feedback_paged', {
+          params: {
+            dashboardId: this.props.match.params.id,
+            page: page,
+            pageSize: 20,
+          },
+        })
+        .then(res => {
+          this.setState({
+            feedbackList: res._embedded.feedbackList, //feedback,
           })
         })
     } catch (e) {
@@ -135,7 +168,11 @@ export default class Dashboard extends Component {
                 onSearch={value => console.log(value)}
                 enterButton="Search"
               />
-              <FeedbackList dataSource={this.state.feedbackList} />
+              <FeedbackList
+                dataSource={this.state.feedbackList}
+                totalVolume={this.state.feedbackCount}
+                onChangePage={this.onChangePage}
+              />
             </Col>
           </Row>
         </Spin>
