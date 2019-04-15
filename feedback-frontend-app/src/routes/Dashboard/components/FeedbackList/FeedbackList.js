@@ -16,6 +16,8 @@ export default function FeedbackList(props) {
         text: PropTypes.string.isRequired,
       })
     ).isRequired,
+    totalVolume: PropTypes.number.isRequired,
+    onChangePage: PropTypes.func.isRequired,
   }
 
   const [currentFeedback, setCurrentFeedback] = useState({})
@@ -81,6 +83,8 @@ export default function FeedbackList(props) {
         renderItem={feedback => renderItem(feedback)}
         pagination={{
           pageSize: 20,
+          total: props.totalVolume,
+          onChange: props.onChangePage,
         }}
       />
       <Modal
