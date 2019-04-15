@@ -85,6 +85,7 @@ export default function FeedbackList(props) {
           pageSize: 20,
           total: props.totalVolume,
           onChange: props.onChangePage,
+          position: 'top',
         }}
       />
       <Modal
