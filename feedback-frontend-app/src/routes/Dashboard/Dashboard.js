@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Spin, message, Row, Col, Input, Button, Card } from 'antd'
+import { Spin, message, Row, Col, Input, Button, Card, Cascader } from 'antd'
 import BasicLayout from './../../layouts/BasicLayout/BasicLayout'
 import FeedbackVolume from './components/FeedbackVolume/FeedbackVolume'
 import FeedbackList from './components/FeedbackList/FeedbackList'
@@ -11,6 +11,39 @@ import MostCommonPhrases from './components/MostCommonPhrases/MostCommonPhrases'
 import RatingPerDay from './components/RatingPerDay/RatingPerDay'
 
 const { Search } = Input
+const sinceOptions = [
+  {
+    value: '1 month',
+    label: '1 month',
+  },
+  {
+    value: '2 weeks',
+    label: '2 weeks',
+  },
+  {
+    value: '1 week',
+    label: '1 week',
+  },
+  {
+    value: 'Today',
+    label: 'Today',
+  },
+]
+
+const sentimentsOptions = [
+  {
+    value: 'POSITIVE',
+    label: 'positive',
+  },
+  {
+    value: 'NEUTRAL',
+    label: 'neutral',
+  },
+  {
+    value: 'NEGATIVE',
+    label: 'negative',
+  },
+]
 
 /** a class component, which is the top level of each dashboard page. */
 export default class Dashboard extends Component {
@@ -42,6 +75,8 @@ export default class Dashboard extends Component {
     // stops the context/owner/this being lost when passing the function down to a sub-component.
     this.onChangePage = this.onChangePage.bind(this)
     this.onSearch = this.onSearch.bind(this)
+    this.onChangeSince = this.onChangeSince.bind(this)
+    this.onChangeSentiments = this.onChangeSentiments.bind(this)
   }
 
   /** a react life cycle method which is called when the component is
@@ -88,10 +123,9 @@ export default class Dashboard extends Component {
     this.setState({
       isLoading: true,
     })
-
+    console.log(value)
     /** try to make the request for all the data and set the state upon success */
     try {
-      console.log(value)
       api
         .request('feedback_stats', {
           params: {
@@ -101,7 +135,13 @@ export default class Dashboard extends Component {
         })
         .then(res => {
           this.setState({
-            feedbackList: res.feedback_paged,
+            feedbackList: res.feedback_paged, //feedback,
+            feedbackCount: res.feedback_count,
+            sentimentCount: res.feedback_sentiment_count,
+            ratingCount: res.feedback_rating_count,
+            feedbackAvgRating: res.feedback_rating_average,
+            feedbackCommonPhrases: res.feedback_common_phrases.result,
+            negativePerDay: res.feedback_rating_negative.result,
           })
         })
     } catch (e) {
@@ -132,6 +172,97 @@ export default class Dashboard extends Component {
         .then(res => {
           this.setState({
             feedbackList: res._embedded.feedbackList, //feedback,
+          })
+        })
+    } catch (e) {
+      message.error(e.toString())
+    } finally {
+      this.setState({
+        isLoading: false,
+      })
+    }
+  }
+
+  async onChangeSince(value) {
+    this.setState({
+      isLoading: true,
+    })
+
+    var date = new Date()
+    var currentTime = date.getTime()
+    var selectedTime = 0
+    var sinceT = 0
+    switch (value[0]) {
+      case '1 month':
+        selectedTime = 1000 * 60 * 60 * 24 * 30
+        sinceT = currentTime - selectedTime
+        break
+      case '2 weeks':
+        selectedTime = 1000 * 60 * 60 * 24 * 14
+        sinceT = currentTime - selectedTime
+        break
+      case '1 week':
+        selectedTime = 1000 * 60 * 60 * 24 * 7
+        sinceT = currentTime - selectedTime
+        break
+      case 'Today':
+        selectedTime = 1000 * 60 * 60 * 24
+        sinceT = currentTime - selectedTime
+        break
+      default:
+    }
+
+    /** try to make the request for all the data and set the state upon success */
+    try {
+      api
+        .request('feedback_stats', {
+          params: {
+            dashboardId: this.props.match.params.id,
+            since: sinceT,
+          },
+        })
+        .then(res => {
+          this.setState({
+            feedbackList: res.feedback_paged, //feedback,
+            feedbackCount: res.feedback_count,
+            sentimentCount: res.feedback_sentiment_count,
+            ratingCount: res.feedback_rating_count,
+            feedbackAvgRating: res.feedback_rating_average,
+            feedbackCommonPhrases: res.feedback_common_phrases.result,
+            negativePerDay: res.feedback_rating_negative.result,
+          })
+        })
+    } catch (e) {
+      message.error(e.toString())
+    } finally {
+      this.setState({
+        isLoading: false,
+      })
+    }
+  }
+
+  async onChangeSentiments(value) {
+    this.setState({
+      isLoading: true,
+    })
+    /** try to make the request for all the data and set the state upon success */
+    try {
+      api
+        .request('feedback_stats', {
+          params: {
+            dashboardId: this.props.match.params.id,
+            sentiment: value[0],
+          },
+        })
+        .then(res => {
+          this.setState({
+            feedbackList: res.feedback_paged, //feedback,
+            feedbackCount: res.feedback_count,
+            sentimentCount: res.feedback_sentiment_count,
+            ratingCount: res.feedback_rating_count,
+            feedbackAvgRating: res.feedback_rating_average,
+            feedbackCommonPhrases: res.feedback_common_phrases.result,
+            negativePerDay: res.feedback_rating_negative.result,
           })
         })
     } catch (e) {
@@ -192,11 +323,25 @@ export default class Dashboard extends Component {
               <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
             </Col>
             <Col span={18}>
-              <Search
-                placeholder="Search"
-                onSearch={this.onSearch}
-                enterButton="Search"
-              />
+              <Col span={12}>
+                <Search
+                  placeholder="Search"
+                  onSearch={this.onSearch}
+                  enterButton="Search"
+                />
+              </Col>
+              <Col span={6}>
+                <Cascader
+                  options={sinceOptions}
+                  onChange={this.onChangeSince}
+                />
+              </Col>
+              <Col span={6}>
+                <Cascader
+                  options={sentimentsOptions}
+                  onChange={this.onChangeSentiments}
+                />
+              </Col>
               <FeedbackList
                 dataSource={this.state.feedbackList}
                 totalVolume={this.state.feedbackCount}
