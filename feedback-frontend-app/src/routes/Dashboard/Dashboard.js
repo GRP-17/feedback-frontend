@@ -41,6 +41,7 @@ export default class Dashboard extends Component {
 
     // stops the context/owner/this being lost when passing the function down to a sub-component.
     this.onChangePage = this.onChangePage.bind(this)
+    this.onSearch = this.onSearch.bind(this)
   }
 
   /** a react life cycle method which is called when the component is
@@ -73,6 +74,34 @@ export default class Dashboard extends Component {
             feedbackCommonPhrases: res.feedback_common_phrases.result,
             negativePerDay: res.feedback_rating_negative.result,
             dashboardName: res.dashboard_name,
+          })
+        })
+    } catch (e) {
+      message.error(e.toString())
+    } finally {
+      this.setState({
+        isLoading: false,
+      })
+    }
+  }
+  async onSearch(value) {
+    this.setState({
+      isLoading: true,
+    })
+
+    /** try to make the request for all the data and set the state upon success */
+    try {
+      console.log(value)
+      api
+        .request('feedback_stats', {
+          params: {
+            dashboardId: this.props.match.params.id,
+            query: value,
+          },
+        })
+        .then(res => {
+          this.setState({
+            feedbackList: res.feedback_paged,
           })
         })
     } catch (e) {
@@ -165,7 +194,7 @@ export default class Dashboard extends Component {
             <Col span={18}>
               <Search
                 placeholder="Search"
-                onSearch={value => console.log(value)}
+                onSearch={this.onSearch}
                 enterButton="Search"
               />
               <FeedbackList
