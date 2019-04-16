@@ -37,6 +37,7 @@ export default class Dashboard extends Component {
       feedbackCommonPhrases: [],
       negativePerDay: [],
       dashboardName: 'Dashboard',
+      searchValue: '',
     }
 
     // stops the context/owner/this being lost when passing the function down to a sub-component.
@@ -63,6 +64,7 @@ export default class Dashboard extends Component {
       api
         .request('feedback_stats', {
           params: { dashboardId: this.props.match.params.id },
+          query: this.state.searchValue,
         })
         .then(res => {
           this.setState({
@@ -84,8 +86,10 @@ export default class Dashboard extends Component {
       })
     }
   }
+
   async onSearch(value) {
     this.setState({
+      searchValue: value,
       isLoading: true,
     })
 
@@ -101,7 +105,9 @@ export default class Dashboard extends Component {
         })
         .then(res => {
           this.setState({
+            // update the current page list and number of feedback to work out number of pages there are.
             feedbackList: res.feedback_paged,
+            feedbackCount: res.feedback_count,
           })
         })
     } catch (e) {
@@ -127,6 +133,8 @@ export default class Dashboard extends Component {
             dashboardId: this.props.match.params.id,
             page: page,
             pageSize: 20,
+            // want the page of feedback when considering the query in the searchbar
+            query: this.state.searchValue,
           },
         })
         .then(res => {
