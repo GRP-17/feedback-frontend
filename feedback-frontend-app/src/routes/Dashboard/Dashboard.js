@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Spin, message, Row, Col, Input, Button, Card } from 'antd'
+import { Spin, message, Row, Col, Input, Button, Card, Cascader } from 'antd'
 import BasicLayout from './../../layouts/BasicLayout/BasicLayout'
 import FeedbackVolume from './components/FeedbackVolume/FeedbackVolume'
 import FeedbackList from './components/FeedbackList/FeedbackList'
@@ -11,6 +11,39 @@ import MostCommonPhrases from './components/MostCommonPhrases/MostCommonPhrases'
 import RatingPerDay from './components/RatingPerDay/RatingPerDay'
 
 const { Search } = Input
+const sinceOptions = [
+  {
+    value: 2592000000,
+    label: '1 month',
+  },
+  {
+    value: 1209600000,
+    label: '2 weeks',
+  },
+  {
+    value: 604800000,
+    label: '1 week',
+  },
+  {
+    value: 86400000,
+    label: 'Today',
+  },
+]
+
+const sentimentsOptions = [
+  {
+    value: 'POSITIVE',
+    label: 'Positive',
+  },
+  {
+    value: 'NEUTRAL',
+    label: 'Neutral',
+  },
+  {
+    value: 'NEGATIVE',
+    label: 'Negative',
+  },
+]
 
 /** a class component, which is the top level of each dashboard page. */
 export default class Dashboard extends Component {
@@ -50,11 +83,18 @@ export default class Dashboard extends Component {
       feedbackCommonPhrases: [],
       negativePerDay: [],
       dashboardName: 'Dashboard',
-      currentPage: 1,
+      searchValue: null,
+      filterSince: null,
+      filterSentiment: null,
+      page: 1,
     }
 
     // stops the context/owner/this being lost when passing the function down to a sub-component.
     this.onChangePage = this.onChangePage.bind(this)
+    this.onSearch = this.onSearch.bind(this)
+    this.onChangeSince = this.onChangeSince.bind(this)
+    this.onChangeSentiments = this.onChangeSentiments.bind(this)
+    this.getData = this.getData.bind(this)
   }
 
   /** a react life cycle method which is called when the component is
@@ -68,6 +108,7 @@ export default class Dashboard extends Component {
   async getData() {
     /** tell the user that page is loading the data by triggering the Spin component */
     this.setState({
+      page: 1,
       isLoading: true,
     })
 
@@ -75,11 +116,16 @@ export default class Dashboard extends Component {
     try {
       api
         .request('feedback_stats', {
-          params: { dashboardId: this.props.match.params.id },
+          params: {
+            dashboardId: this.props.match.params.id,
+            query: this.state.searchValue,
+            since: this.state.filterSince,
+            sentiment: this.state.filterSentiment,
+          },
         })
         .then(res => {
           this.setState({
-            feedbackList: res.feedback_paged, //feedback,
+            feedbackList: res.feedback, //feedback,
             feedbackCount: res.feedback_count,
             sentimentCount: res.feedback_sentiment_count,
             ratingCount: res.feedback_rating_count,
@@ -98,9 +144,23 @@ export default class Dashboard extends Component {
     }
   }
 
+  onSearch(value) {
+    this.setState(
+      {
+        searchValue: value,
+        isLoading: true,
+      },
+      () => {
+        /** try to make the request for all the data and set the state upon success */
+        this.getData()
+      }
+    )
+  }
+
   // handles updating the feedbackList state when the user selects a different page of feedback.
   async onChangePage(page = this.state.currentPage) {
     this.setState({
+      page: page,
       isLoading: true,
       currentPage: page,
     })
@@ -108,11 +168,13 @@ export default class Dashboard extends Component {
     /** try to make the request for all the data and set the state upon success */
     try {
       api
-        .request('feedback_paged', {
+        .request('feedback', {
           params: {
             dashboardId: this.props.match.params.id,
             page: page,
             pageSize: 20,
+            // want the page of feedback when considering the query in the searchbar
+            query: this.state.searchValue,
           },
         })
         .then(res => {
@@ -127,6 +189,35 @@ export default class Dashboard extends Component {
         isLoading: false,
       })
     }
+  }
+
+  onChangeSince(value) {
+    var date = new Date()
+    var currentTime = date.getTime()
+    var sinceT = value.length === 0 ? null : currentTime - value[0]
+
+    this.setState(
+      {
+        filterSince: sinceT,
+      },
+      () => {
+        /** try to make the request for all the data and set the state upon success */
+        this.getData()
+      }
+    )
+  }
+
+  onChangeSentiments(value) {
+    this.setState(
+      {
+        isLoading: true,
+        filterSentiment: value[0],
+      },
+      () => {
+        /** try to make the request for all the data and set the state upon success */
+        this.getData()
+      }
+    )
   }
 
   render() {
@@ -178,17 +269,41 @@ export default class Dashboard extends Component {
               <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
             </Col>
             <Col span={18}>
-              <Search
-                placeholder="Search"
-                onSearch={value => console.log(value)}
-                enterButton="Search"
-              />
-              <FeedbackList
-                dataSource={this.state.feedbackList}
-                totalVolume={this.state.feedbackCount}
-                onChangePage={this.onChangePage}
-                dashboardId={this.props.match.params.id}
-              />
+              <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
+                <Col span={18}>
+                  <Search
+                    placeholder="Search"
+                    onSearch={this.onSearch}
+                    enterButton="Search"
+                  />
+                </Col>
+                <Col span={3}>
+                  <Cascader
+                    placeholder="since filter"
+                    options={sinceOptions}
+                    onChange={this.onChangeSince}
+                  />
+                </Col>
+                <Col span={3}>
+                  <Cascader
+                    placeholder="sentiment filter"
+                    options={sentimentsOptions}
+                    onChange={this.onChangeSentiments}
+                  />
+                </Col>
+              </Row>
+              <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
+                <Col span={24}>
+                  <FeedbackList
+                    dataSource={this.state.feedbackList}
+                    totalVolume={this.state.feedbackCount}
+                    onChangePage={this.onChangePage}
+                    loading={this.state.isLoading}
+                    dashboardId={this.props.match.params.id}
+                    page={this.state.page}
+                  />
+                </Col>
+              </Row>
             </Col>
           </Row>
         </Spin>

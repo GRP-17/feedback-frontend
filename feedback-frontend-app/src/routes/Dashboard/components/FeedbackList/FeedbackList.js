@@ -13,6 +13,8 @@ export default class FeedbackList extends Component {
    * @prop {array} dataSource[] - an array of feedback objects.
    * @prop {number} totalVolume - the total number of feedback items in the database for this dashboard
    * @prop {func} onChangePage - a function which handles the updating of dataSource when a new page is selected
+   * @prop {boolean} loading - display loading dat on the list or not
+   * @prop {number} page - the current page number (state is kept by the Dashboard component)
    */
   static propTypes = {
     dataSource: PropTypes.arrayOf(
@@ -27,6 +29,8 @@ export default class FeedbackList extends Component {
     ).isRequired,
     totalVolume: PropTypes.number.isRequired,
     onChangePage: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
+    page: PropTypes.number.isRequired,
   }
 
   constructor(props) {
@@ -130,9 +134,8 @@ export default class FeedbackList extends Component {
                 />
               </Row>
               <Row type="flex" align="middle">
-                <Rate disabled defaultValue={feedback.rating} />
+                <Rate disabled value={feedback.rating} />
                 <Text>
-                  {' '}
                   {moment(feedback.created).format('YYYY/MM/DD HH:mm')}{' '}
                 </Text>
               </Row>
@@ -148,7 +151,7 @@ export default class FeedbackList extends Component {
       </List.Item>
     )
   }
-
+  
   render() {
     return (
       <>
@@ -162,6 +165,7 @@ export default class FeedbackList extends Component {
           }}
           renderItem={feedback => this.renderItem(feedback)}
           pagination={{
+            current: props.page,
             pageSize: 20,
             total: this.props.totalVolume,
             onChange: this.props.onChangePage,
