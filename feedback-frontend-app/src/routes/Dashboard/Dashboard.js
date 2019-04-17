@@ -50,6 +50,19 @@ export default class Dashboard extends Component {
   /** set the initial state */
   constructor(props) {
     super(props)
+    /**
+     * parameters for the state
+     * @param {Boolean} isLoading - wether the dashboard is waiting to load or not
+     * @param {array} feedbackList - an array of feedback items for the current page
+     * @param {number} feedbackCount - the total count of feedbacks on this dashboard
+     * @param {{}} sentimentCount - an obejct with volumes for each sentiment
+     * @param {{}}}ratingCount - an object with the volumes for each rating
+     * @param {number} feedbackAvgRating - the average rating for this dashboard
+     * @param {array} feedbackCommonPhrases - an array of common phrase objects
+     * @param {array} negativePerDay - an array of data for volume of negative ratings each day
+     * @param {String} dashboardName - the name of the dashboard
+     * @param {number} currentPage - the number of the current page that is selected
+     */
     this.state = {
       isLoading: false,
       feedbackList: [],
@@ -145,10 +158,11 @@ export default class Dashboard extends Component {
   }
 
   // handles updating the feedbackList state when the user selects a different page of feedback.
-  async onChangePage(page) {
+  async onChangePage(page = this.state.currentPage) {
     this.setState({
       page: page,
       isLoading: true,
+      currentPage: page,
     })
 
     /** try to make the request for all the data and set the state upon success */
@@ -285,6 +299,7 @@ export default class Dashboard extends Component {
                     totalVolume={this.state.feedbackCount}
                     onChangePage={this.onChangePage}
                     loading={this.state.isLoading}
+                    dashboardId={this.props.match.params.id}
                     page={this.state.page}
                   />
                 </Col>
