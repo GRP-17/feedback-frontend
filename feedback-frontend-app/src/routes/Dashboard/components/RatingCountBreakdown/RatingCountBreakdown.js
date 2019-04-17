@@ -12,7 +12,19 @@ import {
 import PropTypes from 'prop-types'
 
 export default function RatingCountBreakdown(props) {
-
+  /**
+   * @prop {{}} count - an object of 5 values, each representing a rating
+   *                 and holding the volume of feedback for that rating.
+   */
+  RatingCountBreakdown.propTypes = {
+    count: PropTypes.shape({
+      1: PropTypes.number,
+      2: PropTypes.number,
+      3: PropTypes.number,
+      4: PropTypes.number,
+      5: PropTypes.number,
+    }),
+  }
 
   /** Dynamically work out the width of the Y-Axis based on length of longest value */
   const value_lengths = Object.keys(props.count).map(e => {
@@ -32,27 +44,17 @@ export default function RatingCountBreakdown(props) {
         ]}
       >
         <CartesianGrid strokearray="3 3" vertical={false} />
-        <XAxis dataKey="rating"/>
-        <YAxis width={min_width}/>
+        <XAxis dataKey="rating" />
+        <YAxis width={min_width} />
         <Tooltip />
         <Bar dataKey="count">
           <Cell fill="#e74858" />
           <Cell fill="#ff8a70" />
           <Cell fill="#f8a932" />
           <Cell fill="#03cfb7" />
-          <Cell fill="#249688"/>
+          <Cell fill="#249688" />
         </Bar>
       </BarChart>
     </ResponsiveContainer>
   )
-}
-
-RatingCountBreakdown.propTypes = {
-  count: PropTypes.shape({
-    1: PropTypes.number,
-    2: PropTypes.number,
-    3: PropTypes.number,
-    4: PropTypes.number,
-    5: PropTypes.number,
-  }),
 }

@@ -5,6 +5,9 @@ import PropTypes from 'prop-types'
 const { Title } = Typography
 
 export default function FeedbackAvgRating(props) {
+  /**
+   * @prop {number} avgrating - the average rating to display
+   */
   FeedbackAvgRating.propTypes = {
     avgrating: PropTypes.number.isRequired,
   }
