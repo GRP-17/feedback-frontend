@@ -105,7 +105,7 @@ export default class Dashboard extends Component {
         })
         .then(res => {
           this.setState({
-            feedbackList: res.feedback_paged, //feedback,
+            feedbackList: res.feedback, //feedback,
             feedbackCount: res.feedback_count,
             sentimentCount: res.feedback_sentiment_count,
             ratingCount: res.feedback_rating_count,
@@ -140,7 +140,7 @@ export default class Dashboard extends Component {
         })
         .then(res => {
           this.setState({
-            feedbackList: res.feedback_paged, //feedback,
+            feedbackList: res.feedback, //feedback,
             feedbackCount: res.feedback_count,
             sentimentCount: res.feedback_sentiment_count,
             ratingCount: res.feedback_rating_count,
@@ -233,7 +233,7 @@ export default class Dashboard extends Component {
         })
         .then(res => {
           this.setState({
-            feedbackList: res.feedback_paged, //feedback,
+            feedbackList: res.feedback, //feedback,
             feedbackCount: res.feedback_count,
             sentimentCount: res.feedback_sentiment_count,
             ratingCount: res.feedback_rating_count,
@@ -270,7 +270,7 @@ export default class Dashboard extends Component {
         })
         .then(res => {
           this.setState({
-            feedbackList: res.feedback_paged, //feedback,
+            feedbackList: res.feedback, //feedback,
             feedbackCount: res.feedback_count,
             sentimentCount: res.feedback_sentiment_count,
             ratingCount: res.feedback_rating_count,
