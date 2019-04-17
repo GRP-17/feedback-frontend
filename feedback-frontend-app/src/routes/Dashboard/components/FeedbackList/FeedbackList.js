@@ -18,6 +18,8 @@ export default function FeedbackList(props) {
     ).isRequired,
     totalVolume: PropTypes.number.isRequired,
     onChangePage: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
+    page: PropTypes.number.isRequired,
   }
 
   const [currentFeedback, setCurrentFeedback] = useState({})
@@ -53,7 +55,7 @@ export default function FeedbackList(props) {
                   marginRight: 5,
                 }}
               />
-              <Rate disabled defaultValue={feedback.rating} />
+              <Rate disabled value={feedback.rating} />
               <Text>{moment(feedback.created).format('YYYY/MM/DD HH:mm')}</Text>
             </Row>
           }
@@ -77,11 +79,13 @@ export default function FeedbackList(props) {
         header="FEEDBACK"
         itemLayout="vertical"
         dataSource={props.dataSource}
+        loading={props.loading}
         locale={{
           emptyText: <div style={{ fontStyle: 'italic' }}>No feedback</div>,
         }}
         renderItem={feedback => renderItem(feedback)}
         pagination={{
+          current: props.page,
           pageSize: 20,
           total: props.totalVolume,
           onChange: props.onChangePage,
