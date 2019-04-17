@@ -175,6 +175,8 @@ export default class Dashboard extends Component {
             pageSize: 20,
             // want the page of feedback when considering the query in the searchbar
             query: this.state.searchValue,
+            since: this.state.filterSince,
+            sentiment: this.state.filterSentiment,
           },
         })
         .then(res => {
@@ -299,7 +301,6 @@ export default class Dashboard extends Component {
                     totalVolume={this.state.feedbackCount}
                     onChangePage={this.onChangePage}
                     loading={this.state.isLoading}
-                    dashboardId={this.props.match.params.id}
                     page={this.state.page}
                   />
                 </Col>
