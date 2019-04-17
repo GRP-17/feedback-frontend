@@ -33,17 +33,19 @@ const sinceOptions = [
 const sentimentsOptions = [
   {
     value: 'POSITIVE',
-    label: 'positive',
+    label: 'Positive',
   },
   {
     value: 'NEUTRAL',
-    label: 'neutral',
+    label: 'Neutral',
   },
   {
     value: 'NEGATIVE',
-    label: 'negative',
+    label: 'Negative',
   },
 ]
+var sinceValue
+var sentimentValue
 
 /** a class component, which is the top level of each dashboard page. */
 export default class Dashboard extends Component {
@@ -127,7 +129,6 @@ export default class Dashboard extends Component {
       searchValue: value,
       isLoading: true,
     })
-    console.log(value)
     /** try to make the request for all the data and set the state upon success */
     try {
       api
@@ -217,7 +218,9 @@ export default class Dashboard extends Component {
         break
       default:
     }
-
+    sinceValue = sinceT
+    console.log(sentimentValue)
+    console.log(sinceValue)
     /** try to make the request for all the data and set the state upon success */
     try {
       api
@@ -225,6 +228,7 @@ export default class Dashboard extends Component {
           params: {
             dashboardId: this.props.match.params.id,
             since: sinceT,
+            sentiment: sentimentValue,
           },
         })
         .then(res => {
@@ -251,6 +255,9 @@ export default class Dashboard extends Component {
     this.setState({
       isLoading: true,
     })
+    sentimentValue = value[0]
+    console.log(sentimentValue)
+    console.log(sinceValue)
     /** try to make the request for all the data and set the state upon success */
     try {
       api
@@ -258,6 +265,7 @@ export default class Dashboard extends Component {
           params: {
             dashboardId: this.props.match.params.id,
             sentiment: value[0],
+            since: sinceValue,
           },
         })
         .then(res => {
