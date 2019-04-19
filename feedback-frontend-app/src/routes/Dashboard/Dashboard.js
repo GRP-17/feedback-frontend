@@ -139,8 +139,14 @@ export default class Dashboard extends Component {
 
   // handles updating the feedbackList state when the user selects a different page of feedback.
   handlePageChange = page => {
-    // update the whole dashboard stats
-    this.getFeedbackList(page)
+    this.setState(
+      {
+        page,
+      },
+      () => {
+        this.getFeedbackList(page)
+      }
+    )
   }
 
   handleFilterChange = filter => {
