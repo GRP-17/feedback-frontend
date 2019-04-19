@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Spin, message, Row, Col, Input, Button, Card, Cascader } from 'antd'
+import { Spin, message, Row, Col, Button, Card } from 'antd'
 import BasicLayout from './../../layouts/BasicLayout/BasicLayout'
 import FeedbackVolume from './components/FeedbackVolume/FeedbackVolume'
 import FeedbackList from './components/FeedbackList/FeedbackList'
@@ -9,41 +9,7 @@ import api from '../../utils/Api'
 import FeedbackAvgRating from './components/FeedbackAvgRating/FeedbackAvgRating'
 import MostCommonPhrases from './components/MostCommonPhrases/MostCommonPhrases'
 import RatingPerDay from './components/RatingPerDay/RatingPerDay'
-
-const { Search } = Input
-const sinceOptions = [
-  {
-    value: 2592000000,
-    label: '1 month',
-  },
-  {
-    value: 1209600000,
-    label: '2 weeks',
-  },
-  {
-    value: 604800000,
-    label: '1 week',
-  },
-  {
-    value: 86400000,
-    label: 'Today',
-  },
-]
-
-const sentimentsOptions = [
-  {
-    value: 'POSITIVE',
-    label: 'Positive',
-  },
-  {
-    value: 'NEUTRAL',
-    label: 'Neutral',
-  },
-  {
-    value: 'NEGATIVE',
-    label: 'Negative',
-  },
-]
+import Filtering from './components/Filtering/Filtering'
 
 /** a class component, which is the top level of each dashboard page. */
 export default class Dashboard extends Component {
@@ -269,29 +235,11 @@ export default class Dashboard extends Component {
               <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
             </Col>
             <Col span={18}>
-              <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
-                <Col span={18}>
-                  <Search
-                    placeholder="Search"
-                    onSearch={this.onSearch}
-                    enterButton="Search"
-                  />
-                </Col>
-                <Col span={3}>
-                  <Cascader
-                    placeholder="since filter"
-                    options={sinceOptions}
-                    onChange={this.onChangeSince}
-                  />
-                </Col>
-                <Col span={3}>
-                  <Cascader
-                    placeholder="sentiment filter"
-                    options={sentimentsOptions}
-                    onChange={this.onChangeSentiments}
-                  />
-                </Col>
-              </Row>
+              <Filtering
+                onSearch={this.onSearch}
+                onChangeSince={this.onChangeSince}
+                onChangeSentiments={this.onChangeSentiments}
+              />
               <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
                 <Col span={24}>
                   <FeedbackList

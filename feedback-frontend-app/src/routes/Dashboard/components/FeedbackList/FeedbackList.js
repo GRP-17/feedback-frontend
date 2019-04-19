@@ -151,7 +151,7 @@ export default class FeedbackList extends Component {
       </List.Item>
     )
   }
-  
+
   render() {
     return (
       <>
@@ -165,7 +165,7 @@ export default class FeedbackList extends Component {
           }}
           renderItem={feedback => this.renderItem(feedback)}
           pagination={{
-            current: props.page,
+            current: this.props.page,
             pageSize: 20,
             total: this.props.totalVolume,
             onChange: this.props.onChangePage,
