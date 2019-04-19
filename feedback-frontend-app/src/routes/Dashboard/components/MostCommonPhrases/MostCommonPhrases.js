@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 
 export default function MostCommonPhrases(props) {
   /**
-   * @prop datamap - an array containing all the terms and their frequencies
+   * @prop {array} datamap - an array containing all the terms and their frequencies
    *
    *  term - the term
    *  frequency - the number of appearances for that term
@@ -18,11 +18,13 @@ export default function MostCommonPhrases(props) {
     ).isRequired,
   }
 
+  // define the columns of the Table
   const columns = [
     { title: 'PHRASE', dataIndex: 'phrase' },
     { title: 'VOLUME', dataIndex: 'volume' },
   ]
 
+  // map the values from the collection to the correct format for displaying
   const data = props.datamap.map(el => ({
     key: el.term,
     volume: el.frequency,

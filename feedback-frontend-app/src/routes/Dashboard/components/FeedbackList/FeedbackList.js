@@ -1,38 +1,87 @@
-import React, { useState } from 'react'
-import { List, Rate, Typography, Row, Card, Modal } from 'antd'
+import React, { Component } from 'react'
+import { List, message, Rate, Typography, Row, Card, Modal, Col } from 'antd'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import Title from 'antd/lib/typography/Title'
+import PinnedIcon from './PinnedIcon/PinnedIcon'
+import api from '../../../../utils/Api'
 
 const { Paragraph, Text } = Typography
 
-export default function FeedbackList(props) {
-  FeedbackList.propTypes = {
+export default class FeedbackList extends Component {
+  /**
+   * @prop {array} dataSource[] - an array of feedback objects.
+   * @prop {number} total - the total number of feedback items in the database for this dashboard
+   * @prop {func} onPageChange - a function which handles the updating of dataSource when a new page is selected
+   * @prop {boolean} loading - display loading data on the list or not
+   * @prop {number} page - the current page number (state is kept by the Dashboard component)
+   */
+  static propTypes = {
     dataSource: PropTypes.arrayOf(
       PropTypes.shape({
-        created: PropTypes.number.isRequired,
+        created: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+          .isRequired,
         id: PropTypes.string.isRequired,
         rating: PropTypes.number.isRequired,
         sentiment: PropTypes.string.isRequired,
         text: PropTypes.string.isRequired,
       })
     ).isRequired,
-    totalVolume: PropTypes.number.isRequired,
-    onChangePage: PropTypes.func.isRequired,
+    total: PropTypes.number.isRequired,
+    onPageChange: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
+    page: PropTypes.number.isRequired,
+    pageSize: PropTypes.number.isRequired,
   }
 
-  const [currentFeedback, setCurrentFeedback] = useState({})
-  const [isShowModal, setIsShowModal] = useState(false)
+  constructor(props) {
+    super(props)
 
-  const renderItem = feedback => {
+    /**
+     * the parameters for the state
+     * @param {{}} currentFeedback - the current feedback object loaded into the Modal popup
+     * @param {Boolean} isShowModal - whether to show the Modal popup or not
+     */
+    this.state = {
+      currentFeedback: {},
+      isShowModal: false,
+    }
+    this.onPinnedChanged = this.onPinnedChanged.bind(this)
+  }
+
+  /**
+   * toggle pinned of the current feedback
+   * and 'put' the updated value back into the database
+   */
+  onPinnedChanged() {
+    var upFeedback = this.state.currentFeedback
+    upFeedback.pinned = !this.state.currentFeedback.pinned
+    this.setState({
+      currentFeedback: upFeedback,
+    })
+
+    try {
+      api.request('feedback', {
+        params: {
+          pinned: this.state.currentFeedback.pinned,
+        },
+        method: 'put',
+        appendUrl: '/' + this.state.currentFeedback.id,
+      })
+    } catch (e) {
+      message.error(e.toString())
+    }
+  }
+
+  /**
+   * used to specify how each list item should render/look
+   * @param {{}} feedback each indurvidual feedback item in the list
+   */
+  renderItem = feedback => {
     const sentiment2color = {
       POSITIVE: '#2b9588',
       NEUTRAL: '#eee',
       NEGATIVE: '#e44a5b',
-    }
-
-    const openModal = () => {
-      setCurrentFeedback(feedback)
-      setIsShowModal(true)
     }
 
     return (
@@ -41,68 +90,105 @@ export default function FeedbackList(props) {
           type="inner"
           size="small"
           hoverable
-          onClick={openModal}
+          onClick={() => {
+            this.setState({
+              currentFeedback: feedback,
+              isShowModal: true,
+            })
+          }}
           title={
-            <Row type="flex" align="middle">
-              <div
-                style={{
-                  backgroundColor: sentiment2color[feedback.sentiment],
-                  height: 10,
-                  width: 10,
-                  borderRadius: '50%',
-                  marginRight: 5,
-                }}
-              />
-              <Rate disabled defaultValue={feedback.rating} />
-              <Text>{moment(feedback.created).format('YYYY/MM/DD HH:mm')}</Text>
-            </Row>
+            <>
+              <Row type="flex" align="middle" justify="end">
+                <div
+                  style={{
+                    backgroundColor: sentiment2color[feedback.sentiment],
+                    height: 10,
+                    width: 10,
+                    borderRadius: '50%',
+                    marginRight: 5,
+                  }}
+                />
+                <PinnedIcon
+                  pinned={feedback.pinned}
+                  size="small"
+                  onPinnedChanged={this.onPinnedChanged}
+                  clickable={false}
+                />
+              </Row>
+              <Row type="flex" align="middle">
+                <Rate disabled value={feedback.rating} />
+                <Text>
+                  {moment(feedback.created).format('YYYY/MM/DD HH:mm')}{' '}
+                </Text>
+              </Row>
+            </>
           }
         >
-          {/*<Paragraph ellipsis={{ rows: 2, expandable: true }}>*/}
           <div style={{ height: 100, overflow: 'scroll' }}>
             {feedback.text || (
               <span style={{ fontStyle: 'italic' }}>(No text)</span>
             )}
           </div>
-          {/*</Paragraph>*/}
         </Card>
       </List.Item>
     )
   }
 
-  return (
-    <>
-      <List
-        grid={{ gutter: 10, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4 }}
-        header="FEEDBACK"
-        itemLayout="vertical"
-        dataSource={props.dataSource}
-        locale={{
-          emptyText: <div style={{ fontStyle: 'italic' }}>No feedback</div>,
-        }}
-        renderItem={feedback => renderItem(feedback)}
-        pagination={{
-          pageSize: 20,
-          total: props.totalVolume,
-          onChange: props.onChangePage,
-          position: 'top',
-        }}
-      />
-      <Modal
-        title="FEEDBACK DETAIL"
-        visible={isShowModal}
-        centered
-        footer={null}
-        onCancel={() => {
-          setIsShowModal(false)
-        }}
-      >
-        <Paragraph>
-          {currentFeedback.text || (
-            <span style={{ fontStyle: 'italic' }}>(No text)</span>
-          )}
-        </Paragraph>
-      </Modal>
-    </>
-  )
+  render() {
+    return (
+      <>
+        <List
+          grid={{ gutter: 10, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4 }}
+          header="FEEDBACK"
+          itemLayout="vertical"
+          dataSource={this.props.dataSource}
+          locale={{
+            emptyText: <div style={{ fontStyle: 'italic' }}>No feedback</div>,
+          }}
+          renderItem={feedback => this.renderItem(feedback)}
+          pagination={{
+            current: this.props.page,
+            pageSize: this.props.pageSize,
+            total: this.props.total,
+            onChange: this.props.onPageChange,
+            position: 'top',
+          }}
+          loading={this.props.loading}
+        />
+
+        <Modal
+          title={
+            <Row type="flex">
+              <Col span={20}>
+                <Title level={4}>FEEDBACK DETAILS</Title>
+              </Col>
+              <Col span={4}>
+                <PinnedIcon
+                  pinned={this.state.currentFeedback.pinned || false}
+                  onPinnedChanged={this.onPinnedChanged}
+                  clickable={true}
+                  size="medium"
+                  style={{ cursor: 'pointer' }}
+                />
+              </Col>
+            </Row>
+          }
+          visible={this.state.isShowModal}
+          centered
+          footer={null}
+          onCancel={() => {
+            this.setState({
+              isShowModal: false,
+            })
+          }}
+        >
+          <Paragraph>
+            {this.state.currentFeedback.text || (
+              <span style={{ fontStyle: 'italic' }}>(No text)</span>
+            )}
+          </Paragraph>
+        </Modal>
+      </>
+    )
+  }
 }
