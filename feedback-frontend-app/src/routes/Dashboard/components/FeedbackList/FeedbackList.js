@@ -11,9 +11,9 @@ const { Paragraph, Text } = Typography
 export default class FeedbackList extends Component {
   /**
    * @prop {array} dataSource[] - an array of feedback objects.
-   * @prop {number} totalVolume - the total number of feedback items in the database for this dashboard
-   * @prop {func} onChangePage - a function which handles the updating of dataSource when a new page is selected
-   * @prop {boolean} loading - display loading dat on the list or not
+   * @prop {number} total - the total number of feedback items in the database for this dashboard
+   * @prop {func} onPageChange - a function which handles the updating of dataSource when a new page is selected
+   * @prop {boolean} loading - display loading data on the list or not
    * @prop {number} page - the current page number (state is kept by the Dashboard component)
    */
   static propTypes = {
@@ -27,10 +27,11 @@ export default class FeedbackList extends Component {
         text: PropTypes.string.isRequired,
       })
     ).isRequired,
-    totalVolume: PropTypes.number.isRequired,
-    onChangePage: PropTypes.func.isRequired,
+    total: PropTypes.number.isRequired,
+    onPageChange: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
     page: PropTypes.number.isRequired,
+    pageSize: PropTypes.number.isRequired,
   }
 
   constructor(props) {
@@ -49,26 +50,9 @@ export default class FeedbackList extends Component {
   }
 
   /**
-   *   Lifecycle method that is called when the props are updated
-   *   and used here to set the current feedback when the props with data are passed
-   */
-
-  componentDidUpdate(prevProps) {
-    if (
-      this.props.dataSource !== prevProps.dataSource &&
-      this.props.dataSource.length !== 0
-    ) {
-      this.setState({
-        currentFeedback: this.props.dataSource[0],
-      })
-    }
-  }
-
-  /**
    * toggle pinned of the current feedback
    * and 'put' the updated value back into the database
    */
-
   onPinnedChanged() {
     var upFeedback = this.state.currentFeedback
     upFeedback.pinned = !this.state.currentFeedback.pinned
@@ -93,18 +77,11 @@ export default class FeedbackList extends Component {
    * used to specify how each list item should render/look
    * @param {{}} feedback each indurvidual feedback item in the list
    */
-  renderItem(feedback) {
+  renderItem = feedback => {
     const sentiment2color = {
       POSITIVE: '#2b9588',
       NEUTRAL: '#eee',
       NEGATIVE: '#e44a5b',
-    }
-
-    const openModal = () => {
-      this.setState({
-        currentFeedback: feedback,
-        isShowModal: true,
-      })
     }
 
     return (
@@ -113,7 +90,12 @@ export default class FeedbackList extends Component {
           type="inner"
           size="small"
           hoverable
-          onClick={openModal}
+          onClick={() => {
+            this.setState({
+              currentFeedback: feedback,
+              isShowModal: true,
+            })
+          }}
           title={
             <>
               <Row type="flex" align="middle" justify="end">
@@ -166,11 +148,12 @@ export default class FeedbackList extends Component {
           renderItem={feedback => this.renderItem(feedback)}
           pagination={{
             current: this.props.page,
-            pageSize: 20,
-            total: this.props.totalVolume,
-            onChange: this.props.onChangePage,
+            pageSize: this.props.pageSize,
+            total: this.props.total,
+            onChange: this.props.onPageChange,
             position: 'top',
           }}
+          loading={this.props.loading}
         />
 
         <Modal
@@ -181,7 +164,7 @@ export default class FeedbackList extends Component {
               </Col>
               <Col span={4}>
                 <PinnedIcon
-                  pinned={this.state.currentFeedback.pinned}
+                  pinned={this.state.currentFeedback.pinned || false}
                   onPinnedChanged={this.onPinnedChanged}
                   clickable={true}
                   size="medium"
@@ -197,7 +180,6 @@ export default class FeedbackList extends Component {
             this.setState({
               isShowModal: false,
             })
-            this.props.onChangePage()
           }}
         >
           <Paragraph>
