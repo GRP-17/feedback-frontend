@@ -18,19 +18,23 @@ export default class Dashboard extends Component {
     super(props)
     /**
      * parameters for the state
-     * @param {Boolean} isLoading - wether the dashboard is waiting to load or not
+     * @param {Boolean} isStatsLoading - wether the dashboard is waiting to load or not
+     * @param {Boolean} isFeedbackLoading - wether the feedback list is waiting to load or not
      * @param {array} feedbackList - an array of feedback items for the current page
      * @param {number} feedbackCount - the total count of feedbacks on this dashboard
-     * @param {{}} sentimentCount - an obejct with volumes for each sentiment
+     * @param {{}} sentimentCount - an object with volumes for each sentiment
      * @param {{}}}ratingCount - an object with the volumes for each rating
      * @param {number} feedbackAvgRating - the average rating for this dashboard
      * @param {array} feedbackCommonPhrases - an array of common phrase objects
      * @param {array} negativePerDay - an array of data for volume of negative ratings each day
      * @param {String} dashboardName - the name of the dashboard
-     * @param {number} currentPage - the number of the current page that is selected
+     * @param {object} filter - the filter of feedback list
+     * @param {number} page - the number of the current page that is selected, start from one
+     * @param {number} pageSize - the number of feedback items per page, default: 10
      */
     this.state = {
-      isLoading: false,
+      isStatsLoading: false,
+      isFeedbackLoading: false,
       feedbackList: [],
       feedbackCount: 0,
       sentimentCount: {
@@ -49,139 +53,103 @@ export default class Dashboard extends Component {
       feedbackCommonPhrases: [],
       negativePerDay: [],
       dashboardName: 'Dashboard',
-      searchValue: null,
-      filterSince: null,
-      filterSentiment: null,
+      filter: {},
       page: 1,
+      pageSize: 20,
     }
-
-    // stops the context/owner/this being lost when passing the function down to a sub-component.
-    this.onChangePage = this.onChangePage.bind(this)
-    this.onSearch = this.onSearch.bind(this)
-    this.onChangeSince = this.onChangeSince.bind(this)
-    this.onChangeSentiments = this.onChangeSentiments.bind(this)
-    this.getData = this.getData.bind(this)
   }
 
   /** a react life cycle method which is called when the component is
    * mounted to the web page and is used here to request the data that
    * is to be displayed from the API */
   componentDidMount() {
-    this.getData()
+    this.getStatsData()
   }
 
   /** a function which requests data from the API */
-  async getData() {
+  getStatsData = async () => {
     /** tell the user that page is loading the data by triggering the Spin component */
     this.setState({
       page: 1,
-      isLoading: true,
+      isStatsLoading: true,
     })
 
     /** try to make the request for all the data and set the state upon success */
     try {
-      api
-        .request('feedback_stats', {
-          params: {
-            dashboardId: this.props.match.params.id,
-            query: this.state.searchValue,
-            since: this.state.filterSince,
-            sentiment: this.state.filterSentiment,
-          },
-        })
-        .then(res => {
-          this.setState({
-            feedbackList: res.feedback, //feedback,
-            feedbackCount: res.feedback_count,
-            sentimentCount: res.feedback_sentiment_count,
-            ratingCount: res.feedback_rating_count,
-            feedbackAvgRating: res.feedback_rating_average,
-            feedbackCommonPhrases: res.feedback_common_phrases.result,
-            negativePerDay: res.feedback_rating_negative.result,
-            dashboardName: res.dashboard_name,
-          })
-        })
+      const res = await api.request('feedback_stats', {
+        params: {
+          dashboardId: this.props.match.params.id,
+          ...this.state.filter,
+        },
+      })
+
+      this.setState({
+        feedbackList: res.feedback,
+        feedbackCount: res.feedback_count,
+        sentimentCount: res.feedback_sentiment_count,
+        ratingCount: res.feedback_rating_count,
+        feedbackAvgRating: res.feedback_rating_average,
+        feedbackCommonPhrases: res.feedback_common_phrases.result,
+        negativePerDay: res.feedback_rating_negative.result,
+        dashboardName: res.dashboard_name,
+      })
     } catch (e) {
+      console.error(e)
       message.error(e.toString())
     } finally {
       this.setState({
-        isLoading: false,
+        isStatsLoading: false,
       })
     }
   }
 
-  onSearch(value) {
-    this.setState(
-      {
-        searchValue: value,
-        isLoading: true,
-      },
-      () => {
-        /** try to make the request for all the data and set the state upon success */
-        this.getData()
+  getFeedbackList = async (page = 1) => {
+    this.setState({
+      isFeedbackLoading: true,
+    })
+
+    try {
+      const res = await api.request('feedback', {
+        params: {
+          dashboardId: this.props.match.params.id,
+          page,
+          pageSize: this.state.pageSize,
+          ...this.state.filter,
+        },
+      })
+      if (res._embedded && res._embedded.feedbackList) {
+        // has feedback
+        this.setState({
+          feedbackList: res._embedded.feedbackList,
+        })
+      } else {
+        this.setState({
+          feedbackList: [],
+        })
       }
-    )
+    } catch (e) {
+      console.error(e)
+      message.error(e.toString())
+    } finally {
+      this.setState({
+        isFeedbackLoading: false,
+      })
+    }
   }
 
   // handles updating the feedbackList state when the user selects a different page of feedback.
-  async onChangePage(page = this.state.currentPage) {
-    this.setState({
-      page: page,
-      isLoading: true,
-      currentPage: page,
-    })
-
-    /** try to make the request for all the data and set the state upon success */
-    try {
-      api
-        .request('feedback', {
-          params: {
-            dashboardId: this.props.match.params.id,
-            page: page,
-            pageSize: 20,
-            // want the page of feedback when considering the query in the searchbar
-            query: this.state.searchValue,
-          },
-        })
-        .then(res => {
-          this.setState({
-            feedbackList: res._embedded.feedbackList, //feedback,
-          })
-        })
-    } catch (e) {
-      message.error(e.toString())
-    } finally {
-      this.setState({
-        isLoading: false,
-      })
-    }
+  handlePageChange = page => {
+    // update the whole dashboard stats
+    this.getFeedbackList(page)
   }
 
-  onChangeSince(value) {
-    var date = new Date()
-    var currentTime = date.getTime()
-    var sinceT = value.length === 0 ? null : currentTime - value[0]
-
+  handleFilterChange = filter => {
     this.setState(
       {
-        filterSince: sinceT,
+        filter,
       },
       () => {
-        /** try to make the request for all the data and set the state upon success */
-        this.getData()
-      }
-    )
-  }
-
-  onChangeSentiments(value) {
-    this.setState(
-      {
-        isLoading: true,
-        filterSentiment: value[0],
-      },
-      () => {
-        /** try to make the request for all the data and set the state upon success */
-        this.getData()
+        this.getStatsData()
       }
     )
   }
@@ -201,7 +169,7 @@ export default class Dashboard extends Component {
           </Row>
         }
       >
-        <Spin tip="Loading..." spinning={this.state.isLoading}>
+        <Spin tip="Loading..." spinning={this.state.isStatsLoading}>
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
             <Col span={6}>
               <Card title="Sentiment Distribution" bordered={false}>
@@ -235,20 +203,16 @@ export default class Dashboard extends Component {
               <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
             </Col>
             <Col span={18}>
-              <Filtering
-                onSearch={this.onSearch}
-                onChangeSince={this.onChangeSince}
-                onChangeSentiments={this.onChangeSentiments}
-              />
+              <Filtering onChange={this.handleFilterChange} />
               <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
                 <Col span={24}>
                   <FeedbackList
                     dataSource={this.state.feedbackList}
-                    totalVolume={this.state.feedbackCount}
-                    onChangePage={this.onChangePage}
-                    loading={this.state.isLoading}
-                    dashboardId={this.props.match.params.id}
+                    loading={this.state.isFeedbackLoading}
+                    total={this.state.feedbackCount}
                     page={this.state.page}
+                    pageSize={this.state.pageSize}
+                    onPageChange={this.handlePageChange}
                   />
                 </Col>
               </Row>

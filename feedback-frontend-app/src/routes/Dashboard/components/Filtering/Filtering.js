@@ -1,28 +1,39 @@
 import React from 'react'
-import { Input, Col, Row, Cascader } from 'antd'
+import { Input, Col, Row, Select } from 'antd'
 import PropTypes from 'prop-types'
 
 const { Search } = Input
+
+const ONE_DAY = 1000 * 60 * 60 * 24
+
 const sinceOptions = [
   {
-    value: 2592000000,
-    label: '1 month',
+    value: null,
+    label: 'All Time',
   },
   {
-    value: 1209600000,
-    label: '2 weeks',
+    value: ONE_DAY * 30,
+    label: '1 Month',
   },
   {
-    value: 604800000,
-    label: '1 week',
+    value: ONE_DAY * 14,
+    label: '2 Weeks',
   },
   {
-    value: 86400000,
+    value: ONE_DAY * 7,
+    label: '1 Week',
+  },
+  {
+    value: ONE_DAY,
     label: 'Today',
   },
 ]
 
 const sentimentsOptions = [
+  {
+    value: null,
+    label: 'All Sentiments',
+  },
   {
     value: 'POSITIVE',
     label: 'Positive',
@@ -39,36 +50,77 @@ const sentimentsOptions = [
 
 export default function Filtering(props) {
   /**
-   * @prop volume - the volume of feedbacks in total
+   * @prop onChange: callback function when any of filterings changes
    */
   Filtering.propTypes = {
-    onSearch: PropTypes.func.isRequired,
-    onChangeSince: PropTypes.func.isRequired,
-    onChangeSentiments: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
   }
+
+  const [filter, setFilter] = React.useState({
+    query: null,
+    since: null,
+    sentiment: null,
+  })
+
+  const handleFilterChange = (filterName, value) => {
+    setFilter({ ...filter, [filterName]: value })
+  }
+
+  React.useEffect(() => {
+    if (Object.values(filter).some(v => v !== null)) {
+      // only triggle onChange when any of filters is not null
+      props.onChange(filter)
+    }
+  }, [filter])
 
   return (
     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
-      <Col span={18}>
+      <Col span={12}>
+        {/* Query filter */}
         <Search
           placeholder="Search"
-          onSearch={props.onSearch}
+          onSearch={val => {
+            handleFilterChange('query', val)
+          }}
           enterButton="Search"
+          allowClear
         />
       </Col>
-      <Col span={3}>
-        <Cascader
-          placeholder="since filter"
-          options={sinceOptions}
-          onChange={props.onChangeSince}
-        />
+
+      <Col span={6}>
+        {/* Since filter */}
+        <Select
+          style={{ width: '100%' }}
+          defaultValue={null}
+          placeholder="Since"
+          onSelect={val => {
+            handleFilterChange('since', val)
+          }}
+        >
+          {sinceOptions.map(opt => (
+            <Select.Option value={opt.value} key={opt.value}>
+              {opt.label}
+            </Select.Option>
+          ))}
+        </Select>
       </Col>
-      <Col span={3}>
-        <Cascader
-          placeholder="sentiment filter"
-          options={sentimentsOptions}
-          onChange={props.onChangeSentiments}
-        />
+
+      <Col span={6}>
+        {/* Sentiment filter */}
+        <Select
+          style={{ width: '100%' }}
+          defaultValue={null}
+          placeholder="Sentiment"
+          onSelect={val => {
+            handleFilterChange('sentiment', val)
+          }}
+        >
+          {sentimentsOptions.map(opt => (
+            <Select.Option value={opt.value} key={opt.value}>
+              {opt.label}
+            </Select.Option>
+          ))}
+        </Select>
       </Col>
     </Row>
   )
