@@ -12,20 +12,20 @@ const sinceOptions = [
     label: 'All Time',
   },
   {
-    value: ONE_DAY * 30,
-    label: '1 Month',
+    value: Date.now() - ONE_DAY * 30,
+    label: 'This Month',
   },
   {
-    value: ONE_DAY * 14,
-    label: '2 Weeks',
+    value: Date.now() - ONE_DAY * 7,
+    label: 'This Week',
   },
   {
-    value: ONE_DAY * 7,
-    label: '1 Week',
+    value: Date.now() - ONE_DAY,
+    label: 'This Day',
   },
   {
-    value: ONE_DAY,
-    label: 'Today',
+    value: Date.now() - ONE_DAY / 24,
+    label: 'This Hour',
   },
 ]
 
@@ -66,10 +66,12 @@ export default function Filtering(props) {
     setFilter({ ...filter, [filterName]: value })
   }
 
+  const isInited = React.useRef(false) // prevent first run
   React.useEffect(() => {
-    if (Object.values(filter).some(v => v !== null)) {
-      // only triggle onChange when any of filters is not null
+    if (isInited.current) {
       props.onChange(filter)
+    } else {
+      isInited.current = true
     }
   }, [filter])
 
