@@ -48,6 +48,33 @@ const sentimentsOptions = [
   },
 ]
 
+const ratingOptions = [
+  {
+    value: null,
+    label: 'All Ratings',
+  },
+  {
+    value: 1,
+    label: '⭐️',
+  },
+  {
+    value: 2,
+    label: '⭐️⭐️',
+  },
+  {
+    value: 3,
+    label: '⭐️⭐️⭐️',
+  },
+  {
+    value: 4,
+    label: '⭐️⭐️⭐️⭐️',
+  },
+  {
+    value: 5,
+    label: '⭐️⭐️⭐️⭐️⭐️',
+  },
+]
+
 export default function Filtering(props) {
   /**
    * @prop onChange: callback function when any of filterings changes
@@ -60,6 +87,7 @@ export default function Filtering(props) {
     query: null,
     since: null,
     sentiment: null,
+    rating: null,
   })
 
   const handleFilterChange = (filterName, value) => {
@@ -77,10 +105,10 @@ export default function Filtering(props) {
 
   return (
     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
-      <Col span={12}>
+      <Col span={6}>
         {/* Query filter */}
         <Search
-          placeholder="Search"
+          placeholder="Text"
           onSearch={val => {
             handleFilterChange('query', val)
           }}
@@ -118,6 +146,24 @@ export default function Filtering(props) {
           }}
         >
           {sentimentsOptions.map(opt => (
+            <Select.Option value={opt.value} key={opt.value}>
+              {opt.label}
+            </Select.Option>
+          ))}
+        </Select>
+      </Col>
+
+      <Col span={6}>
+        {/* Rating filter */}
+        <Select
+          style={{ width: '100%' }}
+          defaultValue={null}
+          placeholder="Rating"
+          onSelect={val => {
+            handleFilterChange('rating', val)
+          }}
+        >
+          {ratingOptions.map(opt => (
             <Select.Option value={opt.value} key={opt.value}>
               {opt.label}
             </Select.Option>
