@@ -12,20 +12,24 @@ const sinceOptions = [
     label: 'All Time',
   },
   {
+    value: Date.now() - ONE_DAY * 365,
+    label: 'Last Year',
+  },
+  {
     value: Date.now() - ONE_DAY * 30,
-    label: 'This Month',
+    label: 'Last Month',
   },
   {
     value: Date.now() - ONE_DAY * 7,
-    label: 'This Week',
+    label: 'Last Week',
   },
   {
     value: Date.now() - ONE_DAY,
-    label: 'This Day',
+    label: 'Today',
   },
   {
     value: Date.now() - ONE_DAY / 24,
-    label: 'This Hour',
+    label: 'Last Hour',
   },
 ]
 
