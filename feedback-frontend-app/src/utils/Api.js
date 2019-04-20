@@ -20,6 +20,30 @@ class Api {
       }
     }
 
+    this.axios = axios.create({
+      paramsSerializer(params) {
+        // this mainly works for labelId in query params, e.g.
+        // it converts: ...&labelId[]={id1}&labelId[]={id2}
+        // to: ...&labelId={id1}&labelId={id2}
+        // see https://stackoverflow.com/questions/52482203/axios-multiple-values-comma-separated-in-a-parameter
+        const searchParams = new URLSearchParams()
+        for (const key of Object.keys(params)) {
+          const param = params[key]
+          if (param === null) {
+            continue
+          }
+          if (Array.isArray(param)) {
+            for (const p of param) {
+              searchParams.append(key, p)
+            }
+          } else {
+            searchParams.append(key, param)
+          }
+        }
+        return searchParams.toString()
+      },
+    })
+
     this._init()
   }
 
@@ -32,7 +56,7 @@ class Api {
       configs.url =
         this._parseUrl(url) + (configs.appendUrl ? configs.appendUrl : '')
       configs = { ...configs, ...this.configs }
-      const { data } = await axios(configs)
+      const { data } = await this.axios(configs)
       return data
     } catch (e) {
       throw e
@@ -48,7 +72,7 @@ class Api {
         // url: corsHelper + "http://google.com/",
         ...this.configs,
       }
-      const { data } = await axios(configs)
+      const { data } = await this.axios(configs)
       const links = data._links
       this._initResources(links)
       Promise.resolve()
