@@ -1,15 +1,5 @@
 import React from 'react'
-import {
-  Select,
-  Icon,
-  Divider,
-  Button,
-  Modal,
-  Input,
-  Row,
-  Col,
-  message,
-} from 'antd'
+import { Select, Button, Modal, Input, Row, Col, message } from 'antd'
 import ColorPicker from './ColorPicker'
 import PropTypes from 'prop-types'
 import { calcTextColor, getRandomColor } from '../../../../utils/helper'
@@ -164,15 +154,15 @@ export default function LabelSelect(props) {
         dropdownRender={menu => (
           <div>
             {menu}
-            <Divider style={{ margin: '4px 0' }} />
-            <div
-              style={{ padding: 8, cursor: 'pointer' }}
-              onClick={() => {
+            <Button
+              block
+              onMouseDown={() => {
                 openModal()
               }}
+              icon="plus"
             >
-              <Icon type="plus" /> Add label
-            </div>
+              Add label
+            </Button>
           </div>
         )}
         onChange={props.onChange}
