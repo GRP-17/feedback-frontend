@@ -31,6 +31,7 @@ export default class Dashboard extends Component {
      * @param {object} filter - the filter of feedback list
      * @param {number} page - the number of the current page that is selected, start from one
      * @param {number} pageSize - the number of feedback items per page, default: 10
+     * @param {array} dashboardLabels - the labels of the dashboard
      */
     this.state = {
       isStatsLoading: false,
@@ -56,6 +57,7 @@ export default class Dashboard extends Component {
       filter: {},
       page: 1,
       pageSize: 20,
+      dashboardLabels: [],
     }
   }
 
@@ -92,6 +94,7 @@ export default class Dashboard extends Component {
         feedbackCommonPhrases: res.feedback_common_phrases.result,
         negativePerDay: res.feedback_rating_negative.result,
         dashboardName: res.dashboard_name,
+        dashboardLabels: res.dashboard_labels,
       })
     } catch (e) {
       console.error(e)
@@ -139,10 +142,17 @@ export default class Dashboard extends Component {
 
   // handles updating the feedbackList state when the user selects a different page of feedback.
   handlePageChange = page => {
-    // update the whole dashboard stats
-    this.getFeedbackList(page)
+    this.setState(
+      {
+        page,
+      },
+      () => {
+        this.getFeedbackList(page)
+      }
+    )
   }
 
+  // handles updating the dashboard stats when the user changes a filter
   handleFilterChange = filter => {
     this.setState(
       {
@@ -203,7 +213,11 @@ export default class Dashboard extends Component {
               <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
             </Col>
             <Col span={18}>
-              <Filtering onChange={this.handleFilterChange} />
+              <Filtering
+                dashboardId={this.props.match.params.id}
+                labels={this.state.dashboardLabels}
+                onChange={this.handleFilterChange}
+              />
               <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
                 <Col span={24}>
                   <FeedbackList
