@@ -1,5 +1,6 @@
 import React from 'react'
 import { Input, Col, Row, Select } from 'antd'
+import LabelSelect from '../LabelSelect/LabelSelect'
 import PropTypes from 'prop-types'
 
 const { Search } = Input
@@ -12,20 +13,24 @@ const sinceOptions = [
     label: 'All Time',
   },
   {
+    value: Date.now() - ONE_DAY * 365,
+    label: 'Last Year',
+  },
+  {
     value: Date.now() - ONE_DAY * 30,
-    label: 'This Month',
+    label: 'Last Month',
   },
   {
     value: Date.now() - ONE_DAY * 7,
-    label: 'This Week',
+    label: 'Last Week',
   },
   {
     value: Date.now() - ONE_DAY,
-    label: 'This Day',
+    label: 'Today',
   },
   {
     value: Date.now() - ONE_DAY / 24,
-    label: 'This Hour',
+    label: 'Last Hour',
   },
 ]
 
@@ -75,12 +80,40 @@ const ratingOptions = [
   },
 ]
 
+const singleSelectFilters = [
+  {
+    placeholder: 'Since',
+    name: 'since',
+    options: sinceOptions,
+  },
+  {
+    placeholder: 'Sentiment',
+    name: 'sentiment',
+    options: sentimentsOptions,
+  },
+  {
+    placeholder: 'Rating',
+    name: 'rating',
+    options: ratingOptions,
+  },
+]
+
 export default function Filtering(props) {
   /**
+   * @prop dashboardId: the id of the current dashboard, used for creating labels
+   * @prop labels: array of labels for filtering
    * @prop onChange: callback function when any of filterings changes
    */
   Filtering.propTypes = {
+    dashboardId: PropTypes.string.isRequired,
     onChange: PropTypes.func,
+    labels: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        color: PropTypes.string.isRequired,
+      })
+    ),
   }
 
   const [filter, setFilter] = React.useState({
@@ -88,6 +121,7 @@ export default function Filtering(props) {
     since: null,
     sentiment: null,
     rating: null,
+    labelId: null,
   })
 
   const handleFilterChange = (filterName, value) => {
@@ -104,72 +138,57 @@ export default function Filtering(props) {
   }, [filter])
 
   return (
-    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
-      <Col span={6}>
-        {/* Query filter */}
-        <Search
-          placeholder="Text"
-          onSearch={val => {
-            handleFilterChange('query', val)
-          }}
-          enterButton="Search"
-          allowClear
-        />
-      </Col>
+    <>
+      <Row
+        gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}
+        type="flex"
+        style={{ marginBottom: 10 }}
+      >
+        <Col span={12}>
+          {/* Query filter */}
+          <Search
+            placeholder="Text"
+            onSearch={val => {
+              handleFilterChange('query', val)
+            }}
+            enterButton="Search"
+            allowClear
+          />
+        </Col>
 
-      <Col span={6}>
-        {/* Since filter */}
-        <Select
-          style={{ width: '100%' }}
-          defaultValue={null}
-          placeholder="Since"
-          onSelect={val => {
-            handleFilterChange('since', val)
-          }}
-        >
-          {sinceOptions.map(opt => (
-            <Select.Option value={opt.value} key={opt.value}>
-              {opt.label}
-            </Select.Option>
-          ))}
-        </Select>
-      </Col>
+        <Col span={12}>
+          {/* Labels filter */}
+          <LabelSelect
+            dashboardId={props.dashboardId}
+            labels={props.labels}
+            onChange={val => {
+              handleFilterChange('labelId', val)
+            }}
+          />
+        </Col>
+      </Row>
 
-      <Col span={6}>
-        {/* Sentiment filter */}
-        <Select
-          style={{ width: '100%' }}
-          defaultValue={null}
-          placeholder="Sentiment"
-          onSelect={val => {
-            handleFilterChange('sentiment', val)
-          }}
-        >
-          {sentimentsOptions.map(opt => (
-            <Select.Option value={opt.value} key={opt.value}>
-              {opt.label}
-            </Select.Option>
-          ))}
-        </Select>
-      </Col>
-
-      <Col span={6}>
-        {/* Rating filter */}
-        <Select
-          style={{ width: '100%' }}
-          defaultValue={null}
-          placeholder="Rating"
-          onSelect={val => {
-            handleFilterChange('rating', val)
-          }}
-        >
-          {ratingOptions.map(opt => (
-            <Select.Option value={opt.value} key={opt.value}>
-              {opt.label}
-            </Select.Option>
-          ))}
-        </Select>
-      </Col>
-    </Row>
+      <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
+        {/* Other filters */}
+        {singleSelectFilters.map(fltr => (
+          <Col span={24 / singleSelectFilters.length} key={fltr.name}>
+            <Select
+              style={{ width: '100%' }}
+              defaultValue={null}
+              placeholder={fltr.fltr}
+              onSelect={val => {
+                handleFilterChange(fltr.name, val)
+              }}
+            >
+              {fltr.options.map(opt => (
+                <Select.Option value={opt.value} key={opt.value}>
+                  {opt.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col>
+        ))}
+      </Row>
+    </>
   )
 }
