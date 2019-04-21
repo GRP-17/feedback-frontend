@@ -3,7 +3,8 @@ import { List, message, Rate, Typography, Row, Card, Modal, Col } from 'antd'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 import Title from 'antd/lib/typography/Title'
-import PinnedIcon from './PinnedIcon/PinnedIcon'
+import PinnedIcon from './PinnedIcon'
+import Labels from './Labels'
 import api from '../../../../utils/Api'
 
 const { Paragraph, Text } = Typography
@@ -124,6 +125,7 @@ export default class FeedbackList extends Component {
             </>
           }
         >
+          <Labels labels={feedback.labels} />
           <div style={{ height: 100, overflow: 'scroll' }}>
             {feedback.text || (
               <span style={{ fontStyle: 'italic' }}>(No text)</span>
