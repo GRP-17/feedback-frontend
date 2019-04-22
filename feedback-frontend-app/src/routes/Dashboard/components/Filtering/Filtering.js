@@ -99,23 +99,6 @@ const singleSelectFilters = [
 ]
 
 export default function Filtering(props) {
-  /**
-   * @prop dashboardId: the id of the current dashboard, used for creating labels
-   * @prop labels: array of labels for filtering
-   * @prop onChange: callback function when any of filterings changes
-   */
-  Filtering.propTypes = {
-    dashboardId: PropTypes.string.isRequired,
-    onChange: PropTypes.func,
-    labels: PropTypes.arrayOf(
-      PropTypes.shape({
-        labelId: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        color: PropTypes.string.isRequired,
-      })
-    ),
-  }
-
   const [filter, setFilter] = React.useState({
     query: null,
     since: null,
@@ -164,6 +147,8 @@ export default function Filtering(props) {
             onChange={val => {
               handleFilterChange('labelId', val)
             }}
+            onLabelEdit={props.onLabelEdit}
+            onLabelDelete={props.onLabelDelete}
           />
         </Col>
       </Row>
@@ -191,4 +176,37 @@ export default function Filtering(props) {
       </Row>
     </>
   )
+}
+
+/**
+ * @prop dashboardId: the id of the current dashboard, used for creating labels
+ * @prop labels: array of labels for filtering
+ * @prop onChange: callback function when any of filterings changes
+ */
+Filtering.propTypes = {
+  dashboardId: PropTypes.string.isRequired,
+  onChange: PropTypes.func,
+  onLabelEdit: PropTypes.func,
+  onLabelDelete: PropTypes.func,
+  labels: PropTypes.arrayOf(
+    PropTypes.shape({
+      labelId: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      color: PropTypes.string.isRequired,
+    })
+  ),
+}
+
+Filtering.defaultProps = {
+  dashboardId: null,
+  onChange: val => {
+    console.log(val)
+  },
+  onLabelEdit: label => {
+    console.log(label)
+  },
+  onLabelDelete: labelId => {
+    console.log(labelId)
+  },
+  labels: [],
 }

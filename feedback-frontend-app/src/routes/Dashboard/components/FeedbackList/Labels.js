@@ -4,17 +4,18 @@ import PropTypes from 'prop-types'
 import { calcTextColor } from '../../../../utils/helper'
 
 export default function Labels(props) {
-  return (
-    <div>
-      {props.labels.map(label => (
-        <Tag color={label.color} key={label.labelId}>
-          <span style={{ color: calcTextColor(label.color) }}>
-            {label.name}
-          </span>
-        </Tag>
-      ))}
-    </div>
-  )
+  return props.labels.map(label => (
+    <Tag
+      color={label.color}
+      key={label.labelId}
+      closable={props.editable}
+      onClose={() => {
+        props.onLabelDelete(label.labelId)
+      }}
+    >
+      <span style={{ color: calcTextColor(label.color) }}>{label.name}</span>
+    </Tag>
+  ))
 }
 
 Labels.propTypes = {
@@ -26,10 +27,12 @@ Labels.propTypes = {
       dashboardId: PropTypes.string.isRequired,
     })
   ),
-  deletable: PropTypes.bool,
+  editable: PropTypes.bool,
+  onLabelDelete: PropTypes.func,
 }
 
 Labels.defaultProps = {
   labels: [],
-  deletable: false,
+  editable: false,
+  onLabelDelete: () => {},
 }
