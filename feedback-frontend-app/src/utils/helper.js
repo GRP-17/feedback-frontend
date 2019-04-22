@@ -1,9 +1,11 @@
+import moment from 'moment'
+
 /**
  * Calculate and return the text hex color based on a given hex background color
  * see https://stackoverflow.com/questions/3942878/how-to-decide-font-color-in-white-or-black-depending-on-background-color
- * @param {*} bgColor background color
- * @param {*} lightColor default: '#ffffff'
- * @param {*} darkColor default: '#000000'
+ * @param {string} bgColor background color
+ * @param {string} lightColor default: '#ffffff'
+ * @param {string} darkColor default: '#000000'
  */
 export function calcTextColor(
   bgColor,
@@ -22,4 +24,12 @@ export function calcTextColor(
  */
 export function getRandomColor() {
   return '#' + (0x1000000 + Math.random() * 0xffffff).toString(16).substr(1, 6)
+}
+
+/**
+ * Returns the date in format "YYYY/MM/DD HH:mm"
+ * @param {string|date|integer} d date
+ */
+export function formatDate(d) {
+  return moment(d).format('YYYY/MM/DD HH:mm')
 }

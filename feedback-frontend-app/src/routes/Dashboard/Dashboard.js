@@ -106,7 +106,7 @@ export default class Dashboard extends Component {
     }
   }
 
-  getFeedbackList = async (page = 1) => {
+  getFeedbackList = async (page = this.state.page) => {
     this.setState({
       isFeedbackLoading: true,
     })
@@ -164,6 +164,50 @@ export default class Dashboard extends Component {
     )
   }
 
+  /** handles a feedback changed in the feedback list */
+  handleFeedbackChange = feedback => {
+    // find this feedback by id and update it
+    this.setState(prevState => ({
+      feedbackList: prevState.feedbackList.map(f =>
+        f.id === feedback.id ? feedback : f
+      ),
+    }))
+  }
+
+  /** handles a label edited or created */
+  handleLabelEdit = (label, isNew = false) => {
+    if (isNew) {
+      // create
+      this.setState(prevState => ({
+        dashboardLabels: [...prevState.dashboardLabels, label],
+      }))
+    } else {
+      // update
+      this.setState(prevState => ({
+        dashboardLabels: prevState.dashboardLabels.map(l =>
+          l.labelId === label.labelId ? label : l
+        ),
+        // change all labels in feedback list
+        feedbackList: prevState.feedbackList.map(f => {
+          for (let i = 0; i < f.labels.length; i++) {
+            if (f.labels[i].labelId === label.labelId) {
+              f.labels[i] = label
+            }
+            break
+          }
+          return f
+        }),
+      }))
+    }
+  }
+
+  /** handles a label deleted */
+  handleLabelDelete = id => {
+    this.setState(prevState => ({
+      dashboardLabels: prevState.dashboardLabels.filter(l => l.labelId !== id),
+    }))
+  }
+
   render() {
     return (
       <BasicLayout
@@ -217,16 +261,23 @@ export default class Dashboard extends Component {
                 dashboardId={this.props.match.params.id}
                 labels={this.state.dashboardLabels}
                 onChange={this.handleFilterChange}
+                onLabelEdit={this.handleLabelEdit}
+                onLabelDelete={this.handleLabelDelete}
               />
               <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
                 <Col span={24}>
                   <FeedbackList
+                    dashboardId={this.props.match.params.id}
+                    labels={this.state.dashboardLabels}
                     dataSource={this.state.feedbackList}
                     loading={this.state.isFeedbackLoading}
                     total={this.state.feedbackCount}
                     page={this.state.page}
                     pageSize={this.state.pageSize}
                     onPageChange={this.handlePageChange}
+                    onFeedbackChange={this.handleFeedbackChange}
+                    onLabelEdit={this.handleLabelEdit}
+                    onLabelDelete={this.handleLabelDelete}
                   />
                 </Col>
               </Row>
