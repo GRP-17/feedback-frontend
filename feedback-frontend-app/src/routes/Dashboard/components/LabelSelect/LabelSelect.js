@@ -182,7 +182,11 @@ export default function LabelSelect(props) {
             </span>
           )
           return (
-            <Select.Option value={opt.id} key={opt.id} label={showedLabel}>
+            <Select.Option
+              value={opt.labelId}
+              key={opt.labelId}
+              label={showedLabel}
+            >
               <Button
                 style={{ marginRight: 5 }}
                 size="small"
@@ -190,7 +194,7 @@ export default function LabelSelect(props) {
                 icon="edit"
                 onClick={e => {
                   e.stopPropagation()
-                  openModal(opt.color, opt.name, opt.id)
+                  openModal(opt.color, opt.name, opt.labelId)
                 }}
               />
               <Button
@@ -200,7 +204,7 @@ export default function LabelSelect(props) {
                 icon="delete"
                 onClick={e => {
                   e.stopPropagation()
-                  handleLabelDelete(opt.id)
+                  handleLabelDelete(opt.labelId)
                 }}
               />
               <span style={{ marginLeft: 5 }}>{showedLabel}</span>
@@ -219,7 +223,7 @@ LabelSelect.propTypes = {
   onChange: PropTypes.func,
   labels: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      labelId: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       color: PropTypes.string.isRequired,
     })

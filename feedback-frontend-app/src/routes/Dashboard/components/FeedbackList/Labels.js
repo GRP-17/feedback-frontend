@@ -7,7 +7,7 @@ export default function Labels(props) {
   return (
     <div>
       {props.labels.map(label => (
-        <Tag color={label.color} key={label.id}>
+        <Tag color={label.color} key={label.labelId}>
           <span style={{ color: calcTextColor(label.color) }}>
             {label.name}
           </span>
@@ -17,12 +17,12 @@ export default function Labels(props) {
   )
 }
 
-Labels.PropTypes = {
+Labels.propTypes = {
   labels: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string.isRequired,
       color: PropTypes.string.isRequired,
-      id: PropTypes.string.isRequired,
+      labelId: PropTypes.string.isRequired,
       dashboardId: PropTypes.string.isRequired,
     })
   ),
