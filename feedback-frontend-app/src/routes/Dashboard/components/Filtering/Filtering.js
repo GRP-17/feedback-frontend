@@ -109,7 +109,7 @@ export default function Filtering(props) {
     onChange: PropTypes.func,
     labels: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.string.isRequired,
+        labelId: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         color: PropTypes.string.isRequired,
       })

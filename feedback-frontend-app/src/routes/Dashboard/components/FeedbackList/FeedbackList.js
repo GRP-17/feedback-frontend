@@ -47,31 +47,38 @@ export default class FeedbackList extends Component {
       currentFeedback: {},
       isShowModal: false,
     }
-    this.onPinnedChanged = this.onPinnedChanged.bind(this)
   }
 
   /**
    * toggle pinned of the current feedback
    * and 'put' the updated value back into the database
    */
-  onPinnedChanged() {
-    var upFeedback = this.state.currentFeedback
-    upFeedback.pinned = !this.state.currentFeedback.pinned
-    this.setState({
-      currentFeedback: upFeedback,
-    })
-
-    try {
-      api.request('feedback', {
-        params: {
-          pinned: this.state.currentFeedback.pinned,
+  handlePinnedChange = () => {
+    this.setState(
+      prevState => ({
+        currentFeedback: {
+          ...prevState.currentFeedback,
+          pinned: !prevState.currentFeedback.pinned,
         },
-        method: 'put',
-        appendUrl: '/' + this.state.currentFeedback.id,
-      })
-    } catch (e) {
-      message.error(e.toString())
-    }
+      }),
+      async () => {
+        message.loading('Loading...', 0)
+        try {
+          await api.request('feedback', {
+            data: {
+              pinned: this.state.currentFeedback.pinned,
+            },
+            method: 'put',
+            appendUrl: '/' + this.state.currentFeedback.id,
+          })
+          message.destroy()
+          message.success('Success!')
+        } catch (e) {
+          message.destroy()
+          message.error(e.toString())
+        }
+      }
+    )
   }
 
   /**
@@ -112,8 +119,8 @@ export default class FeedbackList extends Component {
                 <PinnedIcon
                   pinned={feedback.pinned}
                   size="small"
-                  onPinnedChanged={this.onPinnedChanged}
                   clickable={false}
+                  onPinnedChange={this.handlePinnedChange}
                 />
               </Row>
               <Row type="flex" align="middle">
@@ -167,10 +174,9 @@ export default class FeedbackList extends Component {
               <Col span={4}>
                 <PinnedIcon
                   pinned={this.state.currentFeedback.pinned || false}
-                  onPinnedChanged={this.onPinnedChanged}
+                  onPinnedChange={this.handlePinnedChange}
                   clickable={true}
                   size="medium"
-                  style={{ cursor: 'pointer' }}
                 />
               </Col>
             </Row>
