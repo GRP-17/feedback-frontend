@@ -11,6 +11,7 @@ export default function LabelSelect(props) {
   const [labelColor, setLabelColor] = React.useState(getRandomColor())
   const [isLoading, setIsLoading] = React.useState(false)
   const [selectedLabelId, setSelectedLabelId] = React.useState(null)
+  const [value, setValue] = React.useState([])
 
   const closeModal = () => {
     // setSelectedLabelId(null)
@@ -29,9 +30,11 @@ export default function LabelSelect(props) {
   const handleLabelSubmit = async () => {
     setIsLoading(true)
     try {
-      if (selectedLabelId === null) {
+      let label
+      const isNew = selectedLabelId === null
+      if (isNew) {
         // new
-        await api.request('labels', {
+        label = await api.request('labels', {
           method: 'POST',
           data: {
             dashboardId: props.dashboardId,
@@ -39,9 +42,10 @@ export default function LabelSelect(props) {
             name: labelName,
           },
         })
+        props.onLabelEdit(label, isNew)
       } else {
         // update
-        await api.request('labels', {
+        label = await api.request('labels', {
           method: 'PUT',
           appendUrl: `/${selectedLabelId}`,
           data: {
@@ -49,10 +53,10 @@ export default function LabelSelect(props) {
             name: labelName,
           },
         })
+        props.onLabelEdit(label, isNew)
       }
       setIsLoading(false)
       closeModal()
-      // TODO: data change
     } catch (e) {
       console.error(e)
       message.error(e.toString())
@@ -80,7 +84,7 @@ export default function LabelSelect(props) {
             message.error(e.toString())
           }
           resolve()
-          // TODO: data change
+          props.onLabelDelete(id)
         })
       },
       onCancel: () => {
@@ -154,18 +158,37 @@ export default function LabelSelect(props) {
         dropdownRender={menu => (
           <div>
             {menu}
-            <Button
-              block
-              onMouseDown={() => {
-                openModal()
-              }}
-              icon="plus"
-            >
-              Add label
-            </Button>
+            {props.mode === 'filter' && (
+              <Button
+                block
+                onMouseDown={() => {
+                  openModal()
+                }}
+                icon="plus"
+              >
+                Add label
+              </Button>
+            )}
+            {props.mode === 'assign' && (
+              <Button
+                block
+                type="primary"
+                onMouseDown={() => {
+                  // submit && clear selected labels
+                  setValue([])
+                  props.onChange(value)
+                }}
+              >
+                Confirm
+              </Button>
+            )}
           </div>
         )}
-        onChange={props.onChange}
+        value={value}
+        onChange={val => {
+          setValue(val)
+          props.mode === 'filter' && props.onChange(val)
+        }}
         optionLabelProp="label"
       >
         {props.labels.map(opt => {
@@ -182,7 +205,11 @@ export default function LabelSelect(props) {
             </span>
           )
           return (
-            <Select.Option value={opt.id} key={opt.id} label={showedLabel}>
+            <Select.Option
+              value={opt.labelId}
+              key={opt.labelId}
+              label={showedLabel}
+            >
               <Button
                 style={{ marginRight: 5 }}
                 size="small"
@@ -190,7 +217,7 @@ export default function LabelSelect(props) {
                 icon="edit"
                 onClick={e => {
                   e.stopPropagation()
-                  openModal(opt.color, opt.name, opt.id)
+                  openModal(opt.color, opt.name, opt.labelId)
                 }}
               />
               <Button
@@ -200,7 +227,7 @@ export default function LabelSelect(props) {
                 icon="delete"
                 onClick={e => {
                   e.stopPropagation()
-                  handleLabelDelete(opt.id)
+                  handleLabelDelete(opt.labelId)
                 }}
               />
               <span style={{ marginLeft: 5 }}>{showedLabel}</span>
@@ -215,11 +242,14 @@ export default function LabelSelect(props) {
 }
 
 LabelSelect.propTypes = {
+  mode: PropTypes.string,
   dashboardId: PropTypes.string.isRequired,
   onChange: PropTypes.func,
+  onLabelEdit: PropTypes.func,
+  onLabelDelete: PropTypes.func,
   labels: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      labelId: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       color: PropTypes.string.isRequired,
     })
@@ -227,9 +257,16 @@ LabelSelect.propTypes = {
 }
 
 LabelSelect.defaultProps = {
+  mode: 'filter', // assign, filter
   dashboardId: null,
   onChange: val => {
     console.log(val)
+  },
+  onLabelEdit: label => {
+    console.log(label)
+  },
+  onLabelDelete: labelId => {
+    console.log(labelId)
   },
   labels: [],
 }
