@@ -218,12 +218,23 @@ export default class FeedbackList extends Component {
           }}
           title={this.renderFeedbackTitle(feedback)}
         >
-          <div style={{ height: 100, overflow: 'scroll' }}>
-            <Labels labels={feedback.labels} />
-            <div>
-              {feedback.text || (
-                <span style={{ fontStyle: 'italic' }}>(No text)</span>
-              )}
+          {/* Fix scroll bar issue */}
+          <div style={{ height: 100, width: '100%', overflow: 'hidden' }}>
+            <div
+              style={{
+                height: '100%',
+                width: '100%',
+                overflowY: 'scroll',
+                paddingRight: 17,
+                boxSizing: 'content-box',
+              }}
+            >
+              <Labels labels={feedback.labels} />
+              <div>
+                {feedback.text || (
+                  <span style={{ fontStyle: 'italic' }}>(No text)</span>
+                )}
+              </div>
             </div>
           </div>
         </Card>
