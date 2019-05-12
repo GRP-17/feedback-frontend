@@ -1,0 +1,12 @@
+.s-container {
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 15px;
+  transition: all 0.3s ease-in-out;
+  padding: 20px;
+}
+
+.s-container:hover {
+  background-color: #fff;
+  transform: scale(1.01) translateY(-2px);
+}

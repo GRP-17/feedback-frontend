@@ -27,9 +27,9 @@ export function getRandomColor() {
 }
 
 /**
- * Returns the date in format "YYYY/MM/DD HH:mm"
+ * Returns the date in format "DD/MM/YYYY HH:mm"
  * @param {string|date|integer} d date
  */
 export function formatDate(d) {
-  return moment(d).format('YYYY/MM/DD HH:mm')
+  return moment(d).format('DD/MM/YYYY HH:mm')
 }

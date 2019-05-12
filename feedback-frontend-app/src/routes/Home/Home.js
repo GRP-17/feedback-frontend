@@ -41,7 +41,7 @@ export default props => {
   }, [])
 
   return (
-    <BasicLayout header="Feedback Analysis">
+    <BasicLayout>
       <Spin tip="Loading..." spinning={isLoading}>
         <DashboardList
           dataSource={dashboards}
