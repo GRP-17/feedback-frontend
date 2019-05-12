@@ -1,10 +1,9 @@
 import React from 'react'
-import { Typography, Layout } from 'antd'
+import { Layout } from 'antd'
 import PropTypes from 'prop-types'
 import Header from './../Header/Header'
 import Sider from './../Sider/Sider'
 
-const { Title } = Typography
 const { Content } = Layout
 
 /**
