@@ -184,7 +184,7 @@ export default function LabelSelect(props) {
             )}
           </div>
         )}
-        value={value}
+        value={props.value || value}
         onChange={val => {
           setValue(val)
           props.mode === 'filter' && props.onChange(val)
@@ -254,6 +254,7 @@ LabelSelect.propTypes = {
       color: PropTypes.string.isRequired,
     })
   ),
+  value: PropTypes.arrayOf(PropTypes.string),
 }
 
 LabelSelect.defaultProps = {
@@ -269,4 +270,5 @@ LabelSelect.defaultProps = {
     console.log(labelId)
   },
   labels: [],
+  value: null,
 }

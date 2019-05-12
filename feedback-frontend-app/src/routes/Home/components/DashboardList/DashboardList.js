@@ -140,12 +140,15 @@ export default function DashboardList(props) {
   }
 
   return (
-    /** uses antd (a user interface library which has a variety of predefined components for UI's) */
     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
-      {/** .map is used to create a column and card for each entry/dashboard */}
       {props.dataSource.map(d =>
         renderCol(
-          <Link to={`/dashboard/${d.id}`}>
+          <Link
+            to={{
+              pathname: `/dashboard/${d.id}`,
+              state: props.dataSource,
+            }}
+          >
             <Card
               hoverable
               style={{ background: '#eee' }}

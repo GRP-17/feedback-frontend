@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Spin, message, Row, Col, Button, Card } from 'antd'
+import { Spin, message, Row, Col } from 'antd'
 import BasicLayout from './../../layouts/BasicLayout/BasicLayout'
 import FeedbackVolume from './components/FeedbackVolume/FeedbackVolume'
 import FeedbackList from './components/FeedbackList/FeedbackList'
@@ -10,6 +10,8 @@ import FeedbackAvgRating from './components/FeedbackAvgRating/FeedbackAvgRating'
 import MostCommonPhrases from './components/MostCommonPhrases/MostCommonPhrases'
 import RatingPerDay from './components/RatingPerDay/RatingPerDay'
 import Filtering from './components/Filtering/Filtering'
+import DashboardMenu from './components/DashboardMenu/DashboardMenu'
+import Container from './components/Container/Container'
 
 /** a class component, which is the top level of each dashboard page. */
 export default class Dashboard extends Component {
@@ -58,6 +60,7 @@ export default class Dashboard extends Component {
       page: 1,
       pageSize: 20,
       dashboardLabels: [],
+      dashboardData: [],
     }
   }
 
@@ -65,11 +68,28 @@ export default class Dashboard extends Component {
    * mounted to the web page and is used here to request the data that
    * is to be displayed from the API */
   componentDidMount() {
-    this.getStatsData()
+    this.handleDashboardChange(this.props.match.params.id)
   }
 
-  /** a function which requests data from the API */
-  getStatsData = async () => {
+  handleDashboardChange = dashboardId => {
+    this.getStatsData(dashboardId)
+    this.getDashboardData(dashboardId)
+  }
+
+  /** a function which gets dashboard data from local states or the API */
+  getDashboardData = async dashboardId => {
+    let dashboardData = this.props.location.state
+    if (dashboardData === undefined) {
+      // need to be fetch
+      dashboardData = await api
+        .request('dashboards')
+        .then(res => res._embedded.dashboardList)
+    }
+    this.setState({ dashboardData })
+  }
+
+  /** a function which requests stats data from the API */
+  getStatsData = async dashboardId => {
     /** tell the user that page is loading the data by triggering the Spin component */
     this.setState({
       page: 1,
@@ -80,7 +100,7 @@ export default class Dashboard extends Component {
     try {
       const res = await api.request('feedback_stats', {
         params: {
-          dashboardId: this.props.match.params.id,
+          dashboardId: dashboardId,
           ...this.state.filter,
         },
       })
@@ -159,7 +179,7 @@ export default class Dashboard extends Component {
         filter,
       },
       () => {
-        this.getStatsData()
+        this.getStatsData(this.props.match.params.id)
       }
     )
   }
@@ -211,76 +231,108 @@ export default class Dashboard extends Component {
   render() {
     return (
       <BasicLayout
-        header={
-          <Row type="flex" align="middle">
-            <Button
-              ghost
-              shape="circle"
-              icon="left"
-              onClick={this.props.history.goBack}
-            />
-            <span style={{ marginLeft: 10 }}>{this.state.dashboardName}</span>
-          </Row>
+        // headerLeft={
+        //   <Row type="flex" align="middle">
+        //     <Button
+        //       ghost
+        //       shape="circle"
+        //       icon="left"
+        //       onClick={this.props.history.goBack}
+        //     />
+        //     <span style={{ marginLeft: 10 }}>{this.state.dashboardName}</span>
+        //   </Row>
+        // }
+        headerLeft={
+          <span style={{ fontWeight: 'bold', color: '#ccc' }}>
+            {this.state.dashboardName}
+          </span>
         }
+        headerRight={
+          <span style={{ color: '#ccc' }}>
+            Volume:{' '}
+            <span style={{ fontSize: 20 }}>{this.state.feedbackCount}</span> Avg
+            Rating:{' '}
+            <span style={{ fontSize: 20 }}>{this.state.feedbackAvgRating}</span>
+          </span>
+        }
+        sider={
+          <DashboardMenu
+            dataSource={this.state.dashboardData}
+            selectedId={this.props.match.params.id}
+            onChange={this.handleDashboardChange}
+            {...this.props}
+          />
+        }
+        emptyBody
       >
         <Spin tip="Loading..." spinning={this.state.isStatsLoading}>
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
             <Col span={6}>
-              <Card title="Sentiment Distribution" bordered={false}>
+              <Container title="Sentiment Distribution">
+                <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
+              </Container>
+            </Col>
+            {/* <Col span={6}>
+              <Container title="Statistics">
+                <FeedbackVolume volume={this.state.feedbackCount} />
+                <br />
+                <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
+              </Container>
+            </Col> */}
+            <Col span={5}>
+              <Container title="Sentiment Distribution">
                 <SentimentDistribution
                   positive={this.state.sentimentCount.POSITIVE}
                   negative={this.state.sentimentCount.NEGATIVE}
                   neutral={this.state.sentimentCount.NEUTRAL}
                 />
-              </Card>
+              </Container>
             </Col>
-            <Col span={10}>
-              <Card title="Negative Feedback Distribution" bordered={false}>
-                <RatingPerDay data={this.state.negativePerDay} />
-              </Card>
+            <Col span={5}>
+              <Container title="Rating Distribution">
+                <RatingCountBreakdown count={this.state.ratingCount} />
+              </Container>
             </Col>
             <Col span={8}>
-              <Card title="Rating Distribution" bordered={false}>
-                <RatingCountBreakdown count={this.state.ratingCount} />
-              </Card>
+              <Container title="Negative Feedback Distribution">
+                <RatingPerDay data={this.state.negativePerDay} />
+              </Container>
             </Col>
           </Row>
 
           <br />
 
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
-            <Col span={6}>
-              <FeedbackVolume volume={this.state.feedbackCount} />
+            <Col span={24}>
+              <Container title="Filters">
+                <Filtering
+                  dashboardId={this.props.match.params.id}
+                  labels={this.state.dashboardLabels}
+                  onChange={this.handleFilterChange}
+                  onLabelEdit={this.handleLabelEdit}
+                  onLabelDelete={this.handleLabelDelete}
+                />
+              </Container>
               <br />
-              <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
-              <br />
-              <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
-            </Col>
-            <Col span={18}>
-              <Filtering
-                dashboardId={this.props.match.params.id}
-                labels={this.state.dashboardLabels}
-                onChange={this.handleFilterChange}
-                onLabelEdit={this.handleLabelEdit}
-                onLabelDelete={this.handleLabelDelete}
-              />
-              <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
-                <Col span={24}>
-                  <FeedbackList
-                    dashboardId={this.props.match.params.id}
-                    labels={this.state.dashboardLabels}
-                    dataSource={this.state.feedbackList}
-                    loading={this.state.isFeedbackLoading}
-                    total={this.state.feedbackCount}
-                    page={this.state.page}
-                    pageSize={this.state.pageSize}
-                    onPageChange={this.handlePageChange}
-                    onFeedbackChange={this.handleFeedbackChange}
-                    onLabelEdit={this.handleLabelEdit}
-                    onLabelDelete={this.handleLabelDelete}
-                  />
-                </Col>
-              </Row>
+              <Container>
+                <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
+                  <Col span={24}>
+                    <FeedbackList
+                      dashboardId={this.props.match.params.id}
+                      labels={this.state.dashboardLabels}
+                      dataSource={this.state.feedbackList}
+                      loading={this.state.isFeedbackLoading}
+                      total={this.state.feedbackCount}
+                      page={this.state.page}
+                      pageSize={this.state.pageSize}
+                      onPageChange={this.handlePageChange}
+                      onFeedbackChange={this.handleFeedbackChange}
+                      onLabelEdit={this.handleLabelEdit}
+                      onLabelDelete={this.handleLabelDelete}
+                    />
+                  </Col>
+                </Row>
+              </Container>
             </Col>
           </Row>
         </Spin>

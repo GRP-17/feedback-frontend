@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Col, Row, Select } from 'antd'
+import { Input, Col, Row, Select, Button } from 'antd'
 import LabelSelect from '../LabelSelect/LabelSelect'
 import PropTypes from 'prop-types'
 
@@ -13,24 +13,24 @@ const sinceOptions = [
     label: 'All Time',
   },
   {
-    value: Date.now() - ONE_DAY * 365,
-    label: 'Last Year',
-  },
-  {
-    value: Date.now() - ONE_DAY * 30,
-    label: 'Last Month',
-  },
-  {
-    value: Date.now() - ONE_DAY * 7,
-    label: 'Last Week',
+    value: Date.now() - ONE_DAY / 24,
+    label: 'Last Hour',
   },
   {
     value: Date.now() - ONE_DAY,
     label: 'Today',
   },
   {
-    value: Date.now() - ONE_DAY / 24,
-    label: 'Last Hour',
+    value: Date.now() - ONE_DAY * 7,
+    label: 'Last Week',
+  },
+  {
+    value: Date.now() - ONE_DAY * 30,
+    label: 'Last Month',
+  },
+  {
+    value: Date.now() - ONE_DAY * 365,
+    label: 'Last Year',
   },
 ]
 
@@ -59,24 +59,24 @@ const ratingOptions = [
     label: 'All Ratings',
   },
   {
-    value: 1,
-    label: '⭐️',
-  },
-  {
-    value: 2,
-    label: '⭐️⭐️',
-  },
-  {
-    value: 3,
-    label: '⭐️⭐️⭐️',
+    value: 5,
+    label: '⭐️⭐️⭐️⭐️⭐️',
   },
   {
     value: 4,
     label: '⭐️⭐️⭐️⭐️',
   },
   {
-    value: 5,
-    label: '⭐️⭐️⭐️⭐️⭐️',
+    value: 3,
+    label: '⭐️⭐️⭐️',
+  },
+  {
+    value: 2,
+    label: '⭐️⭐️',
+  },
+  {
+    value: 1,
+    label: '⭐️',
   },
 ]
 
@@ -98,14 +98,16 @@ const singleSelectFilters = [
   },
 ]
 
+const initialFilter = {
+  query: null,
+  since: null,
+  sentiment: null,
+  rating: null,
+  labelId: null,
+}
+
 export default function Filtering(props) {
-  const [filter, setFilter] = React.useState({
-    query: null,
-    since: null,
-    sentiment: null,
-    rating: null,
-    labelId: null,
-  })
+  const [filter, setFilter] = React.useState(initialFilter)
 
   const handleFilterChange = (filterName, value) => {
     setFilter({ ...filter, [filterName]: value })
@@ -118,7 +120,15 @@ export default function Filtering(props) {
     } else {
       isInited.current = true
     }
-  }, [filter])
+  }, [filter.since, filter.sentiment, filter.rating, filter.labelId])
+
+  React.useEffect(() => {
+    if (isInited.current && filter.query === null) {
+      props.onChange(filter)
+    } else {
+      isInited.current = true
+    }
+  }, [filter.query])
 
   return (
     <>
@@ -127,33 +137,6 @@ export default function Filtering(props) {
         type="flex"
         style={{ marginBottom: 10 }}
       >
-        <Col span={12}>
-          {/* Query filter */}
-          <Search
-            placeholder="Text"
-            onSearch={val => {
-              handleFilterChange('query', val)
-            }}
-            enterButton="Search"
-            allowClear
-          />
-        </Col>
-
-        <Col span={12}>
-          {/* Labels filter */}
-          <LabelSelect
-            dashboardId={props.dashboardId}
-            labels={props.labels}
-            onChange={val => {
-              handleFilterChange('labelId', val)
-            }}
-            onLabelEdit={props.onLabelEdit}
-            onLabelDelete={props.onLabelDelete}
-          />
-        </Col>
-      </Row>
-
-      <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
         {/* Other filters */}
         {singleSelectFilters.map(fltr => (
           <Col span={24 / singleSelectFilters.length} key={fltr.name}>
@@ -161,6 +144,7 @@ export default function Filtering(props) {
               style={{ width: '100%' }}
               defaultValue={null}
               placeholder={fltr.fltr}
+              value={filter[fltr.name]}
               onSelect={val => {
                 handleFilterChange(fltr.name, val)
               }}
@@ -173,6 +157,50 @@ export default function Filtering(props) {
             </Select>
           </Col>
         ))}
+      </Row>
+
+      <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
+        <Col span={11}>
+          {/* Query filter */}
+          <Search
+            placeholder="Text"
+            onSearch={val => {
+              props.onChange(filter)
+            }}
+            onChange={e => {
+              setFilter({ ...filter, query: e.target.value })
+            }}
+            value={filter.query}
+            enterButton="Search"
+            allowClear
+          />
+        </Col>
+
+        <Col span={11}>
+          {/* Labels filter */}
+          <LabelSelect
+            dashboardId={props.dashboardId}
+            labels={props.labels}
+            onChange={val => {
+              handleFilterChange('labelId', val)
+            }}
+            value={filter.labelId || []}
+            onLabelEdit={props.onLabelEdit}
+            onLabelDelete={props.onLabelDelete}
+          />
+        </Col>
+
+        <Col span={2}>
+          <Button
+            type="link"
+            block
+            onClick={() => {
+              setFilter(initialFilter)
+            }}
+          >
+            Clear
+          </Button>
+        </Col>
       </Row>
     </>
   )

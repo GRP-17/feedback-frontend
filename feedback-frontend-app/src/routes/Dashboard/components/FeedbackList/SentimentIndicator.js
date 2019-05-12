@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 export default function SentimentIndicator(props) {
   const sentiment2color = {
     POSITIVE: '#2b9588',
-    NEUTRAL: '#f8a932',
+    NEUTRAL: '#eee', //'#f8a932',
     NEGATIVE: '#e44a5b',
   }
 
