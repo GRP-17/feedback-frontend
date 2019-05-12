@@ -7,11 +7,17 @@ export default function PinnedIcon(props) {
     <Icon
       type="pushpin"
       theme={props.pinned ? 'filled' : 'twoTone'}
-      twoToneColor="#eb2f96"
-      style={{ cursor: 'pointer', color: '#eb2f96' }}
+      twoToneColor="#b01313"
+      style={{
+        cursor: props.clickable ? 'pointer' : 'inherit',
+        color: '#b01313',
+      }}
       onClick={e => {
+        e.stopPropagation()
         e.preventDefault()
-        props.onPinnedChange(!props.pinned)
+        if (props.clickable) {
+          props.onPinnedChange(!props.pinned)
+        }
       }}
     />
   )
@@ -23,11 +29,13 @@ export default function PinnedIcon(props) {
  */
 PinnedIcon.propTypes = {
   pinned: PropTypes.bool.isRequired,
+  clickable: PropTypes.bool,
   onPinnedChange: PropTypes.func,
 }
 
 PinnedIcon.defaultProps = {
   pinned: false,
+  clickable: false,
   onPinnedChange: val => {
     console.log('click pin', val)
   },

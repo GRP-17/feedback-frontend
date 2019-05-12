@@ -85,11 +85,13 @@ export default class FeedbackList extends Component {
      * @param {{}} currentFeedback - the current feedback object loaded into the Modal popup
      * @param {Boolean} isShowModal - whether to show the Modal popup or not
      * @param {Boolean} isShowPopover - whether to show the popover for label select
+     * @param {number} flagFixingHighlight - to fix the highlighting problem in card. 0: mouseup, 1: mousedown, 2: mousemove
      */
     this.state = {
       currentFeedback: {},
       isShowModal: false,
       isShowPopover: false,
+      flagFixingHighlight: 0,
     }
   }
 
@@ -152,11 +154,11 @@ export default class FeedbackList extends Component {
   handleLabelAssign = async labelIds => {
     // calculate needed labels (not duplicated)
     const newLabels = labelIds.map(id => ({ labelId: id }))
-    const allLables = this.state.currentFeedback.labels.concat(newLabels)
-    const accpetedLabels = []
-    for (let label of allLables) {
-      if (accpetedLabels.every(l => l.labelId !== label.labelId)) {
-        accpetedLabels.push(label)
+    const allLabels = this.state.currentFeedback.labels.concat(newLabels)
+    const acceptedLabels = []
+    for (let label of allLabels) {
+      if (acceptedLabels.every(l => l.labelId !== label.labelId)) {
+        acceptedLabels.push(label)
       }
     }
 
@@ -165,7 +167,7 @@ export default class FeedbackList extends Component {
         appendUrl: `/${this.state.currentFeedback.id}`,
         method: 'put',
         data: {
-          labels: accpetedLabels,
+          labels: acceptedLabels,
         },
       })
       message.loading('loading', 0)
@@ -180,7 +182,7 @@ export default class FeedbackList extends Component {
     }
   }
 
-  renderFeedbackTitle = feedback => {
+  renderFeedbackTitle = (feedback, clickable = false) => {
     return (
       <Row type="flex" align="middle" justify="space-between">
         <Col>
@@ -191,7 +193,7 @@ export default class FeedbackList extends Component {
           <SentimentIndicator sentiment={feedback.sentiment} />
           <PinnedIcon
             pinned={feedback.pinned}
-            clickable={false}
+            clickable={clickable}
             onPinnedChange={this.handlePinnedChange}
           />
         </Col>
@@ -201,7 +203,7 @@ export default class FeedbackList extends Component {
 
   /**
    * used to specify how each list item should render/look
-   * @param {{}} feedback each indurvidual feedback item in the list
+   * @param {{}} feedback each individual feedback item in the list
    */
   renderFeedbackItem = feedback => {
     return (
@@ -210,13 +212,29 @@ export default class FeedbackList extends Component {
           type="inner"
           size="small"
           hoverable
-          onClick={() => {
+          onMouseDown={() => {
             this.setState({
-              currentFeedback: feedback,
-              isShowModal: true,
+              flagFixingHighlight: 1,
             })
           }}
+          onMouseMove={() => {
+            this.setState({
+              flagFixingHighlight: 2,
+            })
+          }}
+          onClick={() => {
+            this.setState(prevState => ({
+              currentFeedback: feedback,
+              isShowModal: prevState.flagFixingHighlight !== 2,
+            }))
+          }}
           title={this.renderFeedbackTitle(feedback)}
+          style={{
+            background: feedback.pinned ? '#fffbe7' : '#fff',
+          }}
+          headStyle={{
+            background: feedback.pinned ? '#fffbe7' : '#fff',
+          }}
         >
           {/* Fix scroll bar issue */}
           <div style={{ height: 100, width: '100%', overflow: 'hidden' }}>
@@ -244,19 +262,19 @@ export default class FeedbackList extends Component {
 
   renderLabelSelectPopOver = () => {
     const currentLabels = this.state.currentFeedback.labels || []
-    const remainingLables = this.props.labels.filter(
+    const remainingLabels = this.props.labels.filter(
       label => !currentLabels.map(l => l.labelId).includes(label.labelId)
     )
 
     return (
-      remainingLables.length > 0 && (
+      remainingLabels.length > 0 && (
         <Popover
           content={
             <div style={{ width: 300 }}>
               <LabelSelect
                 mode="assign"
                 dashboardId={this.props.dashboardId}
-                labels={remainingLables}
+                labels={remainingLabels}
                 onChange={val => {
                   this.handleLabelAssign(val)
                 }}
@@ -278,13 +296,14 @@ export default class FeedbackList extends Component {
       )
     )
   }
+
   renderModal = () => {
     const feedback = this.state.currentFeedback
     return (
       <Modal
         title={
           <div style={{ marginRight: 50 }}>
-            {this.renderFeedbackTitle(feedback)}
+            {this.renderFeedbackTitle(feedback, true)}
           </div>
         }
         visible={this.state.isShowModal}
@@ -318,8 +337,7 @@ export default class FeedbackList extends Component {
     return (
       <>
         <List
-          grid={{ gutter: 10, xs: 1, sm: 1, md: 2, lg: 2, xl: 3, xxl: 4 }}
-          header="FEEDBACK"
+          grid={{ gutter: 10, xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 4 }}
           itemLayout="vertical"
           dataSource={this.props.dataSource}
           locale={{
@@ -331,7 +349,7 @@ export default class FeedbackList extends Component {
             pageSize: this.props.pageSize,
             total: this.props.total,
             onChange: this.props.onPageChange,
-            position: 'top',
+            position: 'both',
           }}
           loading={this.props.loading}
         />
