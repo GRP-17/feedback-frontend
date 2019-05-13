@@ -1,17 +1,16 @@
 import React, { Component } from 'react'
 import { Spin, message, Row, Col } from 'antd'
 import BasicLayout from './../../layouts/BasicLayout/BasicLayout'
-// import FeedbackVolume from './components/FeedbackVolume/FeedbackVolume'
 import FeedbackList from './components/FeedbackList/FeedbackList'
 import SentimentDistribution from './components/SentimentDistribution/SentimentDistribution'
 import RatingCountBreakdown from './components/RatingCountBreakdown/RatingCountBreakdown'
 import api from '../../utils/Api'
-// import FeedbackAvgRating from './components/FeedbackAvgRating/FeedbackAvgRating'
 import MostCommonPhrases from './components/MostCommonPhrases/MostCommonPhrases'
 import RatingPerDay from './components/RatingPerDay/RatingPerDay'
 import Filtering from './components/Filtering/Filtering'
 import DashboardMenu from './components/DashboardMenu/DashboardMenu'
 import Container from './components/Container/Container'
+import VolumeStats from './components/VolumeStats/VolumeStats'
 
 /** a class component, which is the top level of each dashboard page. */
 export default class Dashboard extends Component {
@@ -248,12 +247,10 @@ export default class Dashboard extends Component {
           </span>
         }
         headerRight={
-          <span style={{ color: '#ccc' }}>
-            Volume:{' '}
-            <span style={{ fontSize: 20 }}>{this.state.feedbackCount}</span> Avg
-            Rating:{' '}
-            <span style={{ fontSize: 20 }}>{this.state.feedbackAvgRating}</span>
-          </span>
+          <VolumeStats
+            volume={this.state.feedbackCount}
+            avgRating={this.state.feedbackAvgRating}
+          />
         }
         sider={
           <DashboardMenu
@@ -272,13 +269,6 @@ export default class Dashboard extends Component {
                 <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
               </Container>
             </Col>
-            {/* <Col span={6}>
-              <Container title="Statistics">
-                <FeedbackVolume volume={this.state.feedbackCount} />
-                <br />
-                <FeedbackAvgRating avgrating={this.state.feedbackAvgRating} />
-              </Container>
-            </Col> */}
             <Col span={5}>
               <Container title="Sentiment Distribution">
                 <SentimentDistribution
