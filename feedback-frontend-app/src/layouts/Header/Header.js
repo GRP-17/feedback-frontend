@@ -12,6 +12,7 @@ export default function Header(props) {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+        padding: '0 25px',
       }}
     >
       <div

@@ -265,7 +265,7 @@ export default class Dashboard extends Component {
         <Spin tip="Loading..." spinning={this.state.isStatsLoading}>
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
             <Col span={6}>
-              <Container title="Sentiment Distribution">
+              <Container title="Common Phrases">
                 <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
               </Container>
             </Col>
