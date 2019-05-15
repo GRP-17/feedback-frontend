@@ -33,3 +33,36 @@ export function getRandomColor() {
 export function formatDate(d) {
   return moment(d).format('DD/MM/YYYY HH:mm')
 }
+
+/**
+ * Get the setting from local storage
+ * @param {string} key the setting name
+ * @param {*} value init value to set if there is no value
+ */
+export function getSettings(key, value) {
+  if (localStorage.getItem(key) == null) {
+    setSettings(key, value)
+  }
+  let ret
+  try {
+    ret = JSON.parse(localStorage.getItem(key))
+  } catch (err) {
+    console.error(err)
+  }
+  return ret
+}
+
+/**
+ * Set the setting into local storage
+ * @param {string} key the setting name
+ * @param {*} value any value
+ */
+export function setSettings(key, value) {
+  let v
+  try {
+    v = JSON.stringify(value)
+  } catch (err) {
+    console.error(err)
+  }
+  return localStorage.setItem(key, v)
+}

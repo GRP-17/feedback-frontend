@@ -19,6 +19,7 @@ import SentimentIndicator from './SentimentIndicator'
 import LabelSelect from '../LabelSelect/LabelSelect'
 import { formatDate } from '../../../../utils/helper'
 import api from '../../../../utils/Api'
+import './FeedbackList.css'
 
 const { Paragraph, Text } = Typography
 
@@ -186,11 +187,9 @@ export default class FeedbackList extends Component {
     return (
       <Row type="flex" align="middle" justify="space-between">
         <Col>
-          <Rate disabled value={feedback.rating} />
           <Text>{formatDate(feedback.created)}</Text>
         </Col>
         <Col>
-          <SentimentIndicator sentiment={feedback.sentiment} />
           <PinnedIcon
             pinned={feedback.pinned}
             clickable={clickable}
@@ -209,6 +208,7 @@ export default class FeedbackList extends Component {
     return (
       <List.Item>
         <Card
+          className={feedback.glow ? 'glow' : ''}
           type="inner"
           size="small"
           hoverable
@@ -235,6 +235,10 @@ export default class FeedbackList extends Component {
           headStyle={{
             background: feedback.pinned ? '#fffbe7' : '#fff',
           }}
+          actions={[
+            <Rate disabled value={feedback.rating} />,
+            <SentimentIndicator sentiment={feedback.sentiment} withText />,
+          ]}
         >
           {/* Fix scroll bar issue */}
           <div style={{ height: 100, width: '100%', overflow: 'hidden' }}>
@@ -269,6 +273,7 @@ export default class FeedbackList extends Component {
     return (
       remainingLabels.length > 0 && (
         <Popover
+          overlayStyle={{ zIndex: 1000 }}
           content={
             <div style={{ width: 300 }}>
               <LabelSelect
@@ -308,7 +313,19 @@ export default class FeedbackList extends Component {
         }
         visible={this.state.isShowModal}
         centered
-        footer={null}
+        footer={
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '0 5px',
+            }}
+          >
+            <Rate disabled value={feedback.rating} />
+            <SentimentIndicator sentiment={feedback.sentiment} withText />
+          </div>
+        }
         onCancel={() => {
           this.setState({
             isShowModal: false,
@@ -350,6 +367,9 @@ export default class FeedbackList extends Component {
             total: this.props.total,
             onChange: this.props.onPageChange,
             position: 'both',
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} items`,
+            showQuickJumper: true,
           }}
           loading={this.props.loading}
         />

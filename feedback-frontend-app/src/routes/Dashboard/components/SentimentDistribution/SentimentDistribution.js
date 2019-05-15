@@ -36,6 +36,7 @@ export default function SentimentDistribution(props) {
 
   return (
     <ResponsiveContainer width="100%" height={200}>
+      {/* {Object.values(props).some(v => v !== 0) ? ( */}
       <BarChart
         data={[
           { sentiment: 'Negative', count: props.negative },
@@ -53,6 +54,9 @@ export default function SentimentDistribution(props) {
           <Cell fill="#249688" />
         </Bar>
       </BarChart>
+      {/* : (
+        <div>No Data</div>
+      )} */}
     </ResponsiveContainer>
   )
 }
