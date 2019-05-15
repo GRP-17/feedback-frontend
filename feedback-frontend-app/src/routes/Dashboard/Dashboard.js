@@ -348,6 +348,8 @@ export default class Dashboard extends Component {
               avgRating={this.state.feedbackAvgRating}
             />
             <Popover
+              arrowPointAtCenter
+              placement={'leftBottom'}
               content={
                 <div>
                   <p>
@@ -356,7 +358,13 @@ export default class Dashboard extends Component {
                       onChange={this.handleAutoRefreshingChange}
                     />{' '}
                     Auto Refreshing{' '}
-                    <Icon type="sync" spin={this.state.isStatsLoading} />
+                    <Icon
+                      type="sync"
+                      spin={this.state.isStatsLoading}
+                      onClick={() => {
+                        this.autoRefresh()
+                      }}
+                    />
                   </p>
                   <p>
                     <InputNumber
