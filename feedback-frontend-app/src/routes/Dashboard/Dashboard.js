@@ -151,7 +151,7 @@ export default class Dashboard extends Component {
 
   /** glow new feedback received */
   glowNewFeedback = async (dashboardId, feedback) => {
-    if (Object.values(this.state.filter).some(Boolean)) {
+    if (Object.values(this.state.filter).some(v => v !== null)) {
       return
     }
     const key = `dashboard-${dashboardId}`
@@ -355,7 +355,7 @@ export default class Dashboard extends Component {
               placement={'leftBottom'}
               content={
                 <div>
-                  <p>
+                  <div>
                     <Switch
                       checked={this.state.isAutoRefreshing}
                       onChange={this.handleAutoRefreshingChange}
@@ -368,15 +368,16 @@ export default class Dashboard extends Component {
                         this.autoRefresh()
                       }}
                     />
-                  </p>
-                  <p>
+                  </div>
+                  <br />
+                  <div>
                     <InputNumber
                       min={1}
                       value={this.state.autoRefreshingTiming}
                       onChange={this.handleAutoRefreshingTimingChange}
                     />{' '}
                     seconds
-                  </p>
+                  </div>
                 </div>
               }
               title="Settings"
