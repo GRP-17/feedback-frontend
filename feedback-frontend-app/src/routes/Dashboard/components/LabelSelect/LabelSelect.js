@@ -5,6 +5,8 @@ import PropTypes from 'prop-types'
 import { calcTextColor, getRandomColor } from '../../../../utils/helper'
 import api from '../../../../utils/Api'
 
+const ButtonGroup = Button.Group
+
 export default function LabelSelect(props) {
   const [isModalVisible, setIsModalVisible] = React.useState(false)
   const [labelName, setLabelName] = React.useState('')
@@ -170,17 +172,30 @@ export default function LabelSelect(props) {
               </Button>
             )}
             {props.mode === 'assign' && (
-              <Button
-                block
-                type="primary"
-                onMouseDown={() => {
-                  // submit && clear selected labels
-                  setValue([])
-                  props.onChange(value)
-                }}
-              >
-                Confirm
-              </Button>
+              <ButtonGroup style={{ display: 'flex' }}>
+                <Button
+                  style={{ flex: 1 }}
+                  block
+                  onMouseDown={() => {
+                    openModal()
+                  }}
+                  icon="plus"
+                >
+                  Add label
+                </Button>
+                <Button
+                  style={{ flex: 2 }}
+                  block
+                  type="primary"
+                  onMouseDown={() => {
+                    // submit && clear selected labels
+                    setValue([])
+                    props.onChange(value)
+                  }}
+                >
+                  Confirm
+                </Button>
+              </ButtonGroup>
             )}
           </div>
         )}

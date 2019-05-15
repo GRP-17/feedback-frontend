@@ -1,0 +1,39 @@
+.glow {
+  -webkit-animation-name: glow;
+  -webkit-animation-direction: alternate;
+  -webkit-animation-iteration-count: 6;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-duration: 0.5s;
+  animation-name: glow;
+  animation-direction: alternate;
+  animation-iteration-count: 6;
+  animation-timing-function: ease-in-out;
+  animation-duration: 0.5s;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes glow {
+  from {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0 10px -10px #aef4af;
+  }
+  to {
+    background: #e44a5b;
+    color: #fff;
+    box-shadow: 0 0 10px 10px #aef4af;
+  }
+}
+
+@keyframes glow {
+  from {
+    background: #fff;
+    color: #000;
+    box-shadow: 0 0 10px -10px #aef4af;
+  }
+  to {
+    background: #e44a5b;
+    color: #fff;
+    box-shadow: 0 0 10px 10px #aef4af;
+  }
+}
