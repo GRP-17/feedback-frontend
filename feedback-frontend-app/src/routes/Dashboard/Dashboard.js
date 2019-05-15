@@ -1,5 +1,14 @@
 import React, { Component } from 'react'
-import { Spin, message, Row, Col } from 'antd'
+import {
+  Spin,
+  message,
+  Row,
+  Col,
+  Switch,
+  Popover,
+  Icon,
+  InputNumber,
+} from 'antd'
 import BasicLayout from './../../layouts/BasicLayout/BasicLayout'
 import FeedbackList from './components/FeedbackList/FeedbackList'
 import SentimentDistribution from './components/SentimentDistribution/SentimentDistribution'
@@ -11,6 +20,7 @@ import Filtering from './components/Filtering/Filtering'
 import DashboardMenu from './components/DashboardMenu/DashboardMenu'
 import Container from './components/Container/Container'
 import VolumeStats from './components/VolumeStats/VolumeStats'
+import { getSettings, setSettings } from './../../utils/helper'
 
 /** a class component, which is the top level of each dashboard page. */
 export default class Dashboard extends Component {
@@ -60,6 +70,8 @@ export default class Dashboard extends Component {
       pageSize: 20,
       dashboardLabels: [],
       dashboardData: [],
+      isAutoRefreshing: false,
+      autoRefreshingTiming: 5,
     }
   }
 
@@ -68,15 +80,96 @@ export default class Dashboard extends Component {
    * is to be displayed from the API */
   componentDidMount() {
     this.handleDashboardChange(this.props.match.params.id)
+    this.initSettings()
   }
 
-  handleDashboardChange = dashboardId => {
-    this.getStatsData(dashboardId)
-    this.getDashboardData(dashboardId)
+  /** a react life cycle method which is called when the component will be unmounted,
+   * used to clear some timers
+   */
+  componentWillUnmount() {
+    this.autoRefreshingTimer && clearInterval(this.autoRefreshingTimer)
+  }
+
+  /** initialize some settings */
+  initSettings = () => {
+    /** auto refreshing */
+    const isAutoRefreshing = getSettings('settings-auto-refreshing', false)
+    const autoRefreshingTiming = getSettings(
+      'settings-auto-refreshing-timing',
+      this.state.autoRefreshingTiming
+    )
+    this.setState({ isAutoRefreshing, autoRefreshingTiming })
+    if (isAutoRefreshing) {
+      this.autoRefreshingTimer = setInterval(
+        this.autoRefresh,
+        this.state.autoRefreshingTiming * 1000
+      )
+    }
+  }
+
+  /** handler for auto-refreshing change */
+  handleAutoRefreshingChange = checked => {
+    this.setState({ isAutoRefreshing: checked })
+    setSettings('settings-auto-refreshing', checked)
+    if (checked) {
+      message.success('Auto Refreshing On')
+      this.autoRefreshingTimer = setInterval(
+        this.autoRefresh,
+        this.state.autoRefreshingTiming * 1000
+      )
+    } else {
+      message.info('Auto Refreshing Off')
+      this.autoRefreshingTimer && clearInterval(this.autoRefreshingTimer)
+    }
+  }
+
+  /** handler for auto-refreshing timing change */
+  handleAutoRefreshingTimingChange = second => {
+    this.setState({ autoRefreshingTiming: second })
+    setSettings('settings-auto-refreshing-timing', second)
+    message.success('Auto Refresh Every ' + second + 's')
+    if (this.state.isAutoRefreshing) {
+      this.autoRefreshingTimer && clearInterval(this.autoRefreshingTimer)
+      this.autoRefreshingTimer = setInterval(
+        this.autoRefresh,
+        this.state.autoRefreshingTiming * 1000
+      )
+    }
+  }
+
+  /** auto-refresh the dashboard */
+  autoRefresh = () => {
+    this.handleDashboardChange(this.props.match.params.id)
+  }
+
+  /** handler when dashboard changes  */
+  handleDashboardChange = async dashboardId => {
+    this.getDashboardData()
+    const { feedback } = await this.getStatsData(dashboardId)
+    this.glowNewFeedback(dashboardId, feedback)
+  }
+
+  /** glow new feedback received */
+  glowNewFeedback = async (dashboardId, feedback) => {
+    const key = `dashboard-${dashboardId}`
+    const oldFeedback = JSON.parse(localStorage.getItem(key))
+    if (oldFeedback == null) {
+      localStorage.setItem(key, JSON.stringify(feedback))
+    } else {
+      const oldFeedbackIds = oldFeedback.map(f => f.id)
+      localStorage.setItem(key, JSON.stringify(feedback))
+      const newFeedback = feedback.map(f => {
+        if (!oldFeedbackIds.includes(f.id)) {
+          f.glow = true
+        }
+        return f
+      })
+      this.setState({ feedbackList: newFeedback })
+    }
   }
 
   /** a function which gets dashboard data from local states or the API */
-  getDashboardData = async dashboardId => {
+  getDashboardData = async () => {
     let dashboardData = this.props.location.state
     if (dashboardData === undefined) {
       // need to be fetch
@@ -96,8 +189,9 @@ export default class Dashboard extends Component {
     })
 
     /** try to make the request for all the data and set the state upon success */
+    let res
     try {
-      const res = await api.request('feedback_stats', {
+      res = await api.request('feedback_stats', {
         params: {
           dashboardId: dashboardId,
           ...this.state.filter,
@@ -123,6 +217,7 @@ export default class Dashboard extends Component {
         isStatsLoading: false,
       })
     }
+    return res
   }
 
   getFeedbackList = async (page = this.state.page) => {
@@ -242,15 +337,42 @@ export default class Dashboard extends Component {
         //   </Row>
         // }
         headerLeft={
-          <span style={{ fontWeight: 'bold', color: '#ccc' }}>
+          <span style={{ fontWeight: 'bold', color: '#ccc', fontSize: 30 }}>
             {this.state.dashboardName}
           </span>
         }
         headerRight={
-          <VolumeStats
-            volume={this.state.feedbackCount}
-            avgRating={this.state.feedbackAvgRating}
-          />
+          <>
+            <VolumeStats
+              volume={this.state.feedbackCount}
+              avgRating={this.state.feedbackAvgRating}
+            />
+            <Popover
+              content={
+                <div>
+                  <p>
+                    <Switch
+                      checked={this.state.isAutoRefreshing}
+                      onChange={this.handleAutoRefreshingChange}
+                    />{' '}
+                    Auto Refreshing{' '}
+                    <Icon type="sync" spin={this.state.isStatsLoading} />
+                  </p>
+                  <p>
+                    <InputNumber
+                      min={1}
+                      value={this.state.autoRefreshingTiming}
+                      onChange={this.handleAutoRefreshingTimingChange}
+                    />{' '}
+                    seconds
+                  </p>
+                </div>
+              }
+              title="Settings"
+            >
+              <Icon type="setting" style={{ color: '#eee', marginLeft: 15 }} />
+            </Popover>
+          </>
         }
         sider={
           <DashboardMenu
@@ -262,10 +384,10 @@ export default class Dashboard extends Component {
         }
         emptyBody
       >
-        <Spin tip="Loading..." spinning={this.state.isStatsLoading}>
+        <Spin tip="Loading..." spinning={this.state.isStatsLoading} delay={300}>
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
             <Col span={6}>
-              <Container title="Sentiment Distribution">
+              <Container title="Common Phrases">
                 <MostCommonPhrases datamap={this.state.feedbackCommonPhrases} />
               </Container>
             </Col>
@@ -289,9 +411,7 @@ export default class Dashboard extends Component {
               </Container>
             </Col>
           </Row>
-
           <br />
-
           <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} type="flex">
             <Col span={24}>
               <Container title="Filters">
