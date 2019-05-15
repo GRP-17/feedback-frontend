@@ -151,6 +151,9 @@ export default class Dashboard extends Component {
 
   /** glow new feedback received */
   glowNewFeedback = async (dashboardId, feedback) => {
+    if (Object.values(this.state.filter).some(Boolean)) {
+      return
+    }
     const key = `dashboard-${dashboardId}`
     const oldFeedback = JSON.parse(localStorage.getItem(key))
     if (oldFeedback == null) {
